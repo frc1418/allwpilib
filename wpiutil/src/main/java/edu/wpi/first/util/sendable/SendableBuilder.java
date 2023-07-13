@@ -15,6 +15,7 @@ import java.util.function.LongConsumer;
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 
+@SuppressWarnings("UnusedReturnValue")
 public interface SendableBuilder extends AutoCloseable {
   /** The backend kinds used for the sendable builder. */
   enum BackendKind {
@@ -39,6 +40,14 @@ public interface SendableBuilder extends AutoCloseable {
   void setActuator(boolean value);
 
   /**
+   * Set a flag indicating if this Sendable should be controllable from the dashboard. By default,
+   * this flag is false.
+   *
+   * @param controllable true if controllable, false if not
+   */
+  void setControllable(boolean controllable);
+
+  /**
    * Set the function that should be called to set the Sendable into a safe state. This is called
    * when entering and exiting Live Window mode.
    *
@@ -46,14 +55,18 @@ public interface SendableBuilder extends AutoCloseable {
    */
   void setSafeState(Runnable func);
 
+  void selfMetadata(SendableMetadata metadata);
+
   /**
    * Add a boolean property.
    *
    * @param key property name
    * @param getter getter function (returns current value)
    * @param setter setter function (sets new value)
+   * @return property config object
    */
-  void addBooleanProperty(String key, BooleanSupplier getter, BooleanConsumer setter);
+  SendablePropertyBuilder addBooleanProperty(
+      String key, BooleanSupplier getter, BooleanConsumer setter);
 
   /**
    * Add an integer property.
@@ -61,8 +74,9 @@ public interface SendableBuilder extends AutoCloseable {
    * @param key property name
    * @param getter getter function (returns current value)
    * @param setter setter function (sets new value)
+   * @return property config object
    */
-  void addIntegerProperty(String key, LongSupplier getter, LongConsumer setter);
+  SendablePropertyBuilder addIntegerProperty(String key, LongSupplier getter, LongConsumer setter);
 
   /**
    * Add a float property.
@@ -70,8 +84,9 @@ public interface SendableBuilder extends AutoCloseable {
    * @param key property name
    * @param getter getter function (returns current value)
    * @param setter setter function (sets new value)
+   * @return property config object
    */
-  void addFloatProperty(String key, FloatSupplier getter, FloatConsumer setter);
+  SendablePropertyBuilder addFloatProperty(String key, FloatSupplier getter, FloatConsumer setter);
 
   /**
    * Add a double property.
@@ -79,8 +94,10 @@ public interface SendableBuilder extends AutoCloseable {
    * @param key property name
    * @param getter getter function (returns current value)
    * @param setter setter function (sets new value)
+   * @return property config object
    */
-  void addDoubleProperty(String key, DoubleSupplier getter, DoubleConsumer setter);
+  SendablePropertyBuilder addDoubleProperty(
+      String key, DoubleSupplier getter, DoubleConsumer setter);
 
   /**
    * Add a string property.
@@ -88,8 +105,10 @@ public interface SendableBuilder extends AutoCloseable {
    * @param key property name
    * @param getter getter function (returns current value)
    * @param setter setter function (sets new value)
+   * @return property config object
    */
-  void addStringProperty(String key, Supplier<String> getter, Consumer<String> setter);
+  SendablePropertyBuilder addStringProperty(
+      String key, Supplier<String> getter, Consumer<String> setter);
 
   /**
    * Add a boolean array property.
@@ -97,8 +116,10 @@ public interface SendableBuilder extends AutoCloseable {
    * @param key property name
    * @param getter getter function (returns current value)
    * @param setter setter function (sets new value)
+   * @return property config object
    */
-  void addBooleanArrayProperty(String key, Supplier<boolean[]> getter, Consumer<boolean[]> setter);
+  SendablePropertyBuilder addBooleanArrayProperty(
+      String key, Supplier<boolean[]> getter, Consumer<boolean[]> setter);
 
   /**
    * Add an integer array property.
@@ -106,8 +127,10 @@ public interface SendableBuilder extends AutoCloseable {
    * @param key property name
    * @param getter getter function (returns current value)
    * @param setter setter function (sets new value)
+   * @return property config object
    */
-  void addIntegerArrayProperty(String key, Supplier<long[]> getter, Consumer<long[]> setter);
+  SendablePropertyBuilder addIntegerArrayProperty(
+      String key, Supplier<long[]> getter, Consumer<long[]> setter);
 
   /**
    * Add a float array property.
@@ -115,8 +138,10 @@ public interface SendableBuilder extends AutoCloseable {
    * @param key property name
    * @param getter getter function (returns current value)
    * @param setter setter function (sets new value)
+   * @return property config object
    */
-  void addFloatArrayProperty(String key, Supplier<float[]> getter, Consumer<float[]> setter);
+  SendablePropertyBuilder addFloatArrayProperty(
+      String key, Supplier<float[]> getter, Consumer<float[]> setter);
 
   /**
    * Add a double array property.
@@ -124,8 +149,10 @@ public interface SendableBuilder extends AutoCloseable {
    * @param key property name
    * @param getter getter function (returns current value)
    * @param setter setter function (sets new value)
+   * @return property config object
    */
-  void addDoubleArrayProperty(String key, Supplier<double[]> getter, Consumer<double[]> setter);
+  SendablePropertyBuilder addDoubleArrayProperty(
+      String key, Supplier<double[]> getter, Consumer<double[]> setter);
 
   /**
    * Add a string array property.
@@ -133,8 +160,10 @@ public interface SendableBuilder extends AutoCloseable {
    * @param key property name
    * @param getter getter function (returns current value)
    * @param setter setter function (sets new value)
+   * @return property config object
    */
-  void addStringArrayProperty(String key, Supplier<String[]> getter, Consumer<String[]> setter);
+  SendablePropertyBuilder addStringArrayProperty(
+      String key, Supplier<String[]> getter, Consumer<String[]> setter);
 
   /**
    * Add a raw property.
@@ -143,9 +172,19 @@ public interface SendableBuilder extends AutoCloseable {
    * @param typeString type string
    * @param getter getter function (returns current value)
    * @param setter setter function (sets new value)
+   * @return property config object
    */
-  void addRawProperty(
+  SendablePropertyBuilder addRawProperty(
       String key, String typeString, Supplier<byte[]> getter, Consumer<byte[]> setter);
+
+  /**
+   * Add a Sendable property as a nested child.
+   *
+   * @param key property name
+   * @param sendable child
+   * @return property config object
+   */
+  SendablePropertyBuilder addSendable(String key, Sendable sendable);
 
   /**
    * Gets the kind of backend being used.
