@@ -7,9 +7,12 @@ package edu.wpi.first.wpilibj;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.simulation.SimHooks;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -128,5 +131,49 @@ class TimerTest {
     SimHooks.stepTiming(0.5);
     double end = Timer.getFPGATimestamp();
     assertEquals(start + 0.5, end, 1e-9);
+  }
+
+  @Test
+  @ResourceLock("timing")
+  void delaySimTest() {
+    double waitSeconds = 1;
+
+    AtomicBoolean hasFinished = new AtomicBoolean(false);
+    AtomicReference<Double> start = new AtomicReference<>(0.0);
+    AtomicReference<Double> end = new AtomicReference<>(0.0);
+
+    Thread testThread =
+        new Thread(
+            () -> {
+              start.set(Timer.getFPGATimestamp());
+              Timer.delaySim(waitSeconds);
+              end.set(Timer.getFPGATimestamp());
+              hasFinished.set(true);
+            });
+
+    testThread.start();
+
+    while (!hasFinished.get()) {
+      SimHooks.stepTiming(0.1);
+      try {
+        // Allows other thread to catch up- without this, the sim time will continue to increase
+        // well after the delay function ends until it is able to set hasFinished.
+        Thread.sleep(1);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    while (!hasFinished.get()) {
+      SimHooks.stepTiming(1);
+    }
+
+    try {
+      testThread.join();
+    } catch (InterruptedException ex) {
+      fail("Test thread was interrupted");
+    }
+
+    assertEquals(waitSeconds, end.get() - start.get(), 1e-9);
   }
 }

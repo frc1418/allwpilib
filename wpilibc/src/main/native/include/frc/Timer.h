@@ -21,6 +21,14 @@ namespace frc {
 void Wait(units::second_t seconds);
 
 /**
+ * Pause the thread for a specified time. In sim, this function utilizes the
+ * simulation timing.
+ *
+ * @param seconds Length of time to pause.
+ */
+void WaitSim(units::microsecond_t seconds);
+
+/**
  * @brief  Gives real-time clock system time with nanosecond resolution
  * @return The time, just in case you want the robot to start autonomous at 8pm
  *         on Saturday.
