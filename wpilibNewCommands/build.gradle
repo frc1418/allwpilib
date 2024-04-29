@@ -26,6 +26,11 @@ dependencies {
 
 sourceSets.main.java.srcDir "${projectDir}/src/generated/main/java"
 
+tasks.withType(Javadoc) {
+    options.addBooleanOption("-enable-preview", true)
+    options.addStringOption("-release", "21")
+}
+
 nativeUtils.exportsConfigs {
     wpilibNewCommands {
         x64ExcludeSymbols = [
