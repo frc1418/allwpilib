@@ -123,4 +123,10 @@ test {
         outputs.upToDateWhen {false}
         showStandardStreams = true
     }
+    doFirst {
+        jvmArgs = [
+            '--add-opens', 'java.base/jdk.internal.vm=ALL-UNNAMED',
+            '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+        ]
+    }
 }
