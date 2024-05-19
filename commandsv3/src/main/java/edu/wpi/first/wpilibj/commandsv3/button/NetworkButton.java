@@ -11,11 +11,7 @@ import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-/**
- * A {@link Trigger} that uses a {@link NetworkTable} boolean field.
- *
- * <p>This class is provided by the NewCommands VendorDep
- */
+/** A {@link Trigger} that uses a {@link NetworkTable} boolean field. */
 public class NetworkButton extends Trigger {
   /**
    * Creates a NetworkButton that commands can be bound to.

@@ -8,11 +8,7 @@ import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
 
 import edu.wpi.first.wpilibj.GenericHID;
 
-/**
- * A {@link Trigger} that gets its state from a {@link GenericHID}.
- *
- * <p>This class is provided by the NewCommands VendorDep
- */
+/** A {@link Trigger} that gets its state from a {@link GenericHID}. */
 public class JoystickButton extends Trigger {
   /**
    * Creates a joystick button for triggering commands.

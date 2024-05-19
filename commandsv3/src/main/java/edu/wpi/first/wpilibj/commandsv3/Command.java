@@ -216,21 +216,6 @@ public interface Command {
     return new CommandBuilder().executing(impl);
   }
 
-  /** Schedules this command with the default scheduler. */
-  default void schedule() {
-    Scheduler.getInstance().schedule(this);
-  }
-
-  /** Cancels this command, if running on the default scheduler. */
-  default void cancel() {
-    Scheduler.getInstance().cancel(this);
-  }
-
-  /** Checks if this command is currently scheduled to be running on the default scheduler. */
-  default boolean isScheduled() {
-    return Scheduler.getInstance().isRunning(this);
-  }
-
   /**
    * Creates a new command that runs this one for a maximum duration, after which it is forcibly
    * canceled. This is particularly useful for autonomous routines where you want to prevent your

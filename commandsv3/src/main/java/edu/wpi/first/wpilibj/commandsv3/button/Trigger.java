@@ -20,12 +20,11 @@ import java.util.function.BooleanSupplier;
  *
  * <p>Triggers can easily be composed for advanced functionality using the {@link
  * #and(BooleanSupplier)}, {@link #or(BooleanSupplier)}, {@link #negate()} operators.
- *
- * <p>This class is provided by the NewCommands VendorDep
  */
 public class Trigger implements BooleanSupplier {
   private final BooleanSupplier m_condition;
   private final EventLoop m_loop;
+  private final Scheduler scheduler = Scheduler.getInstance();
 
   /**
    * Creates a new trigger based on the given condition.
@@ -66,7 +65,7 @@ public class Trigger implements BooleanSupplier {
             boolean pressed = m_condition.getAsBoolean();
 
             if (!m_pressedLast && pressed) {
-              command.schedule();
+              scheduler.schedule(command);
             }
 
             m_pressedLast = pressed;
@@ -92,7 +91,7 @@ public class Trigger implements BooleanSupplier {
             boolean pressed = m_condition.getAsBoolean();
 
             if (m_pressedLast && !pressed) {
-              command.schedule();
+              scheduler.schedule(command);
             }
 
             m_pressedLast = pressed;
@@ -121,9 +120,9 @@ public class Trigger implements BooleanSupplier {
             boolean pressed = m_condition.getAsBoolean();
 
             if (!m_pressedLast && pressed) {
-              command.schedule();
+              scheduler.schedule(command);
             } else if (m_pressedLast && !pressed) {
-              command.cancel();
+              scheduler.cancel(command);
             }
 
             m_pressedLast = pressed;
@@ -152,9 +151,9 @@ public class Trigger implements BooleanSupplier {
             boolean pressed = m_condition.getAsBoolean();
 
             if (m_pressedLast && !pressed) {
-              command.schedule();
+              scheduler.schedule(command);
             } else if (!m_pressedLast && pressed) {
-              command.cancel();
+              scheduler.cancel(command);
             }
 
             m_pressedLast = pressed;
@@ -180,10 +179,10 @@ public class Trigger implements BooleanSupplier {
             boolean pressed = m_condition.getAsBoolean();
 
             if (!m_pressedLast && pressed) {
-              if (command.isScheduled()) {
-                command.cancel();
+              if (scheduler.isScheduledOrRunning(command)) {
+                scheduler.cancel(command);
               } else {
-                command.schedule();
+                scheduler.schedule(command);
               }
             }
 
@@ -210,10 +209,10 @@ public class Trigger implements BooleanSupplier {
             boolean pressed = m_condition.getAsBoolean();
 
             if (m_pressedLast && !pressed) {
-              if (command.isScheduled()) {
-                command.cancel();
+              if (scheduler.isScheduledOrRunning(command)) {
+                scheduler.cancel(command);
               } else {
-                command.schedule();
+                scheduler.schedule(command);
               }
             }
 
