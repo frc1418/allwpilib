@@ -59,8 +59,7 @@ public class CommandGenericHID {
 
   /**
    * Constructs a Trigger instance based around this angle of the default (index 0) POV on the HID,
-   * attached to {@link Scheduler#getDefaultButtonLoop() the default command scheduler button
-   * loop}.
+   * attached to {@link Scheduler#getDefaultButtonLoop() the default command scheduler button loop}.
    *
    * <p>The POV angles start at 0 in the up direction, and increase clockwise (e.g. right is 90,
    * upper-left is 315).
@@ -90,8 +89,8 @@ public class CommandGenericHID {
 
   /**
    * Constructs a Trigger instance based around the 0 degree angle (up) of the default (index 0) POV
-   * on the HID, attached to {@link Scheduler#getDefaultButtonLoop() the default command
-   * scheduler button loop}.
+   * on the HID, attached to {@link Scheduler#getDefaultButtonLoop() the default command scheduler
+   * button loop}.
    *
    * @return a Trigger instance based around the 0 degree angle of a POV on the HID.
    */
@@ -189,8 +188,7 @@ public class CommandGenericHID {
 
   /**
    * Constructs a Trigger instance that is true when the axis value is less than {@code threshold},
-   * attached to {@link Scheduler#getDefaultButtonLoop() the default command scheduler button
-   * loop}.
+   * attached to {@link Scheduler#getDefaultButtonLoop() the default command scheduler button loop}.
    *
    * @param axis The axis to read, starting at 0
    * @param threshold The value below which this trigger should return true.
@@ -217,8 +215,7 @@ public class CommandGenericHID {
 
   /**
    * Constructs a Trigger instance that is true when the axis value is less than {@code threshold},
-   * attached to {@link Scheduler#getDefaultButtonLoop() the default command scheduler button
-   * loop}.
+   * attached to {@link Scheduler#getDefaultButtonLoop() the default command scheduler button loop}.
    *
    * @param axis The axis to read, starting at 0
    * @param threshold The value above which this trigger should return true.

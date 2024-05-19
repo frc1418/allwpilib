@@ -14,8 +14,7 @@ public class CommandBuilder {
   private int priority = Command.DEFAULT_PRIORITY;
   private Command.RobotDisabledBehavior disabledBehavior =
       Command.RobotDisabledBehavior.CancelWhileDisabled;
-  private Command.InterruptBehavior interruptBehavior =
-      Command.InterruptBehavior.CancelOnInterrupt;
+  private Command.InterruptBehavior interruptBehavior = Command.InterruptBehavior.CancelOnInterrupt;
 
   public CommandBuilder requiring(RequireableResource resource) {
     requirements.add(resource);

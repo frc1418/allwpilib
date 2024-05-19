@@ -291,10 +291,7 @@ class SchedulerTest {
     }
 
     var command =
-        new CommandBuilder()
-            .requiring(resources)
-            .executing(Coroutine::yield)
-            .named("Big Command");
+        new CommandBuilder().requiring(resources).executing(Coroutine::yield).named("Big Command");
 
     // Scheduling the command should evict the on-deck default commands
     scheduler.schedule(command);

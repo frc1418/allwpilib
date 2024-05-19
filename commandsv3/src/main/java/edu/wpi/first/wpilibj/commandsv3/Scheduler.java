@@ -77,9 +77,9 @@ public class Scheduler {
 
   /**
    * Sets the default command for a resource. The command must require the resource, and cannot
-   * require any others. Default commands must {@link
-   * Command.InterruptBehavior#SuspendOnInterrupt suspend on interrupt} and have a lower
-   * priority than {@link Command#DEFAULT_PRIORITY} to function properly.
+   * require any others. Default commands must {@link Command.InterruptBehavior#SuspendOnInterrupt
+   * suspend on interrupt} and have a lower priority than {@link Command#DEFAULT_PRIORITY} to
+   * function properly.
    *
    * @param resource the resource for which to set the default command
    * @param defaultCommand the default command to execute on the resource
@@ -593,8 +593,8 @@ public class Scheduler {
   }
 
   /**
-   * Called by {@link Command#run(Coroutine)}, this will cause the command's execution to pause
-   * and cede control back to the scheduler.
+   * Called by {@link Command#run(Coroutine)}, this will cause the command's execution to pause and
+   * cede control back to the scheduler.
    *
    * @return true
    * @throws IllegalStateException if called outside a command that is currently being executed by

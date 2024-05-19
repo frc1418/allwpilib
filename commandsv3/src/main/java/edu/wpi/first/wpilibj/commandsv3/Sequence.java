@@ -33,10 +33,7 @@ public class Sequence implements Command {
     }
 
     this.priority =
-        commands.stream()
-            .mapToInt(Command::priority)
-            .max()
-            .orElse(Command.DEFAULT_PRIORITY);
+        commands.stream().mapToInt(Command::priority).max().orElse(Command.DEFAULT_PRIORITY);
 
     this.robotDisabledBehavior = RobotDisabledBehavior.RunWhileDisabled;
     for (var command : commands) {

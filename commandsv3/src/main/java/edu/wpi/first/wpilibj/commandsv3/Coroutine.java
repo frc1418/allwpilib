@@ -71,8 +71,8 @@ public interface Coroutine {
   }
 
   /**
-   * Waits for some duration of time to elapse. Returns immediately if the given duration is zero
-   * or negative. Call this within a command or command composition to introduce a simple delay.
+   * Waits for some duration of time to elapse. Returns immediately if the given duration is zero or
+   * negative. Call this within a command or command composition to introduce a simple delay.
    *
    * <p>For example, a basic autonomous routine that drives straight for 5 seconds:
    * {@snippet lang = java :

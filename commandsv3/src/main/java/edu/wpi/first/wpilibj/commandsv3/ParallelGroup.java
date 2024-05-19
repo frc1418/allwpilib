@@ -16,9 +16,7 @@ public class ParallelGroup implements Command {
   private RobotDisabledBehavior disabledBehavior;
 
   public ParallelGroup(
-      String name,
-      Collection<Command> allCommands,
-      Collection<Command> requiredCommands) {
+      String name, Collection<Command> allCommands, Collection<Command> requiredCommands) {
     if (!allCommands.containsAll(requiredCommands)) {
       throw new IllegalArgumentException("Required commands must also be composed");
     }
@@ -49,10 +47,7 @@ public class ParallelGroup implements Command {
     }
 
     this.priority =
-        allCommands.stream()
-            .mapToInt(Command::priority)
-            .max()
-            .orElse(Command.DEFAULT_PRIORITY);
+        allCommands.stream().mapToInt(Command::priority).max().orElse(Command.DEFAULT_PRIORITY);
 
     this.disabledBehavior = RobotDisabledBehavior.RunWhileDisabled;
     for (Command command : allCommands) {
