@@ -3,10 +3,12 @@ package edu.wpi.first.wpilibj.commandsv3;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,7 +26,7 @@ class SchedulerTest {
   }
 
   @Test
-  void basic() throws Exception {
+  void basic() {
     var enabled = new AtomicBoolean(false);
     var ran = new AtomicBoolean(false);
     var command =
@@ -142,7 +144,7 @@ class SchedulerTest {
   }
 
   @Test
-  void errorDetection() throws Exception {
+  void errorDetection() {
     var resource = new RequireableResource("X", scheduler);
 
     var command =
@@ -205,7 +207,7 @@ class SchedulerTest {
   }
 
   @Test
-  void cancelOnInterruptDoesNotResume() throws Exception {
+  void cancelOnInterruptDoesNotResume() {
     var count = new AtomicInteger(0);
 
     var resource = new RequireableResource("Resource", scheduler);
@@ -236,7 +238,7 @@ class SchedulerTest {
   }
 
   @Test
-  void scheduleOverDefaultDoesNotRescheduleDefault() throws Exception {
+  void scheduleOverDefaultDoesNotRescheduleDefault() {
     var count = new AtomicInteger(0);
 
     var resource = new RequireableResource("Resource", scheduler);
@@ -348,7 +350,7 @@ class SchedulerTest {
         outer
             .run(
                 (coroutine) -> {
-                  scheduler.scheduleAndWait(innerCommand);
+                  coroutine.await(innerCommand);
                   outerRan.set(true);
                 })
             .named("Outer Command");
@@ -366,6 +368,92 @@ class SchedulerTest {
     scheduler.run();
     assertTrue(outerRan.get());
     assertFalse(scheduler.isRunning(outerCommand));
+  }
+
+  @Test
+  void cancelDeeplyNestedCompositions() {
+    Command root = Command.noRequirements((co) -> {
+      co.await(Command.noRequirements((co2) -> {
+        co2.await(Command.noRequirements((co3) -> {
+          co3.await(Command.noRequirements(Coroutine::park).named("Park"));
+        }).named("C3"));
+      }).named("C2"));
+    }).named("Root");
+
+    scheduler.schedule(root);
+
+    scheduler.run(); // schedule c2
+    scheduler.run(); // schedule c3
+    scheduler.run(); // schedule park
+    scheduler.run(); // start park
+    assertEquals(4, scheduler.getRunningCommands().size());
+
+    scheduler.cancel(root);
+    assertEquals(0, scheduler.getRunningCommands().size());
+  }
+
+  @Test
+  void compositionsDoNotSelfCancel() {
+    var res = new RequireableResource("The Resource", scheduler);
+    var group = res.run((co) -> {
+      co.await(res.run((co2) -> {
+        co2.await(res.run((co3) -> {
+          co3.await(res.run(Coroutine::park).named("Park"));
+        }).named("C3"));
+      }).named("C2"));
+    }).named("Group");
+
+    scheduler.schedule(group);
+    scheduler.run(); // schedule c2
+    scheduler.run(); // schedule c3
+    scheduler.run(); // schedule park
+    scheduler.run(); // start park
+    assertEquals(4, scheduler.getRunningCommands().size());
+    assertTrue(scheduler.isRunning(group));
+  }
+
+  @Test
+  void compositionsDoNotNeedRequirements() {
+    var r1 = new RequireableResource("R1", scheduler);
+    var r2 = new RequireableResource("r2", scheduler);
+
+    // the group has no requirements, but can schedule child commands that do
+    var group = Command.noRequirements((co) -> {
+      co.awaitAll(
+          r1.run(Coroutine::park).named("R1 Command"),
+          r2.run(Coroutine::park).named("R2 Command"));
+    }).named("Composition");
+
+    scheduler.schedule(group);
+    scheduler.run(); // schedule r1 and r2 commands
+    scheduler.run(); // start r1 and r2 commands
+    assertEquals(3, scheduler.getRunningCommands().size());
+  }
+
+  @Test
+  void compositionsCannotAwaitConflictingCommands() {
+    var res = new RequireableResource("The Resource", scheduler);
+
+    var group = Command.noRequirements((co) -> {
+      co.awaitAll(
+          res.run(Coroutine::park).named("First"),
+          res.run(Coroutine::park).named("Second")
+      );
+    }).named("Group");
+
+    scheduler.schedule(group);
+
+    // Running should attempt to schedule multiple conflicting commands
+    try {
+      scheduler.run();
+      fail("An exception should have been thrown");
+    } catch (CommandExecutionException e) {
+      if (e.getCause() instanceof IllegalArgumentException iae) {
+        assertEquals("Command Second requires resources that are already used by First. Both require The Resource", iae.getMessage());
+      } else {
+        fail("Unexpected exception: " + e);
+      }
+    }
   }
 
   record PriorityCommand(int priority, RequireableResource... subsystems) implements Command {

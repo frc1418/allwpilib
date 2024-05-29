@@ -2,6 +2,7 @@ package edu.wpi.first.wpilibj.commandsv3;
 
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Time;
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -35,6 +36,8 @@ public interface Coroutine {
    * be scheduled automatically.
    *
    * @param command the command to await
+   * @throws IllegalStateException if the given command uses a resource not owned by the calling
+   *     command
    */
   default void await(Command command) {
     if (!scheduler().isScheduledOrRunning(command)) {
@@ -44,30 +47,55 @@ public interface Coroutine {
   }
 
   /**
-   * Awaits completion of all given commands. Unlike {@link #await(Command)}, none of the given
-   * commands will be scheduled.
+   * Awaits completion of all given commands. If any command is not current scheduled or running,
+   * it will be scheduled.
    *
    * @param commands the commands to await
-   * @throws IllegalStateException if any of the given commands is not already running or scheduled
-   * @throws IllegalStateException if any of the given commands uses a resource not owned by the
-   *     calling command
+   * @throws IllegalArgumentException if any of the commands conflict with each other
    */
   default void awaitAll(Collection<Command> commands) {
+    // Schedule anything that's not already queued or running
+    commands.stream()
+        .filter(c -> !scheduler().isScheduledOrRunning(c))
+        .forEach(scheduler()::schedule);
     scheduler().awaitAll(commands);
   }
 
   /**
-   * Awaits completion of any given commands. Unlike {@link #await(Command)}, none of the given
-   * commands will be scheduled. Once any of the givne commands completes, the rest will be
-   * canceled.
+   * Awaits completion of all given commands. If any command is not current scheduled or running,
+   * it will be scheduled.
    *
    * @param commands the commands to await
-   * @throws IllegalStateException if any of the given commands is not already running or scheduled
-   * @throws IllegalStateException if any of the given commands uses a resource not owned by the
-   *     calling command
+   * @throws IllegalArgumentException if any of the commands conflict with each other
+   */
+  default void awaitAll(Command... commands) {
+    awaitAll(Arrays.asList(commands));
+  }
+
+  /**
+   * Awaits completion of any given commands. Any command that's not already scheduled or running
+   * will be scheduled. After any of the given commands completes, the rest will be canceled.
+   *
+   * @param commands the commands to await
+   * @throws IllegalArgumentException if any of the commands conflict with each other
    */
   default void awaitAny(Collection<Command> commands) {
+    // Schedule anything that's not already queued or running
+    commands.stream()
+        .filter(c -> !scheduler().isScheduledOrRunning(c))
+        .forEach(scheduler()::schedule);
     scheduler().awaitAny(commands);
+  }
+
+  /**
+   * Awaits completion of any given commands. Any command that's not already scheduled or running
+   * will be scheduled. After any of the given commands completes, the rest will be canceled.
+   *
+   * @param commands the commands to await
+   * @throws IllegalArgumentException if any of the commands conflict with each other
+   */
+  default void awaitAny(Command... commands) {
+    awaitAny(Arrays.asList(commands));
   }
 
   /**
@@ -76,7 +104,7 @@ public interface Coroutine {
    *
    * <p>For example, a basic autonomous routine that drives straight for 5 seconds:
    * {@snippet lang = java :
-   * AsyncCommand timedDrive() {
+   * Command timedDrive() {
    *   return drivebase.run((coroutine) -> {
    *     drivebase.tankDrive(1, 1);
    *     coroutine.wait(Seconds.of(5));

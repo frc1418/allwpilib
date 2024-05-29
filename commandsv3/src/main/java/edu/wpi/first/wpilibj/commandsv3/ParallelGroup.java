@@ -83,8 +83,6 @@ public class ParallelGroup implements Command {
 
   @Override
   public void run(Coroutine coroutine) {
-    commands.forEach(coroutine.scheduler()::schedule);
-
     if (requiredCommands.isEmpty()) {
       coroutine.awaitAny(commands);
     } else {

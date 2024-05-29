@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class Scheduler {
   private final Set<RequireableResource> registeredResources = new HashSet<>();
@@ -171,32 +172,19 @@ public class Scheduler {
       return;
     }
 
-    if (currentCommand != null) {
-      // Scheduled by a command.
-      // Permit disjoint requirement sets iff every requirement of the scheduled command is a nested
-      // resource under a single requirement of the parent command
-      if (currentCommand.requirements().stream()
-          .anyMatch(parentReq -> parentReq.nestedResources().containsAll(command.requirements()))) {
-        // Allow
-      } else {
-        // Instead of checking for conflicts with all running commands (which would include the
-        // parent), we instead need to verify that the scheduled command ONLY uses resources also
-        // used by the parent. Technically, we should also verify that the scheduled command also
-        // does not require any of the same resources as any sibling, either. But that can come
-        // later.
-        if (!currentCommand.requirements().containsAll(command.requirements())) {
-          var disallowedResources = new LinkedHashSet<>(command.requirements());
-          disallowedResources.removeIf(currentCommand::requires);
-          throw new IllegalStateException(
-              "Nested commands can only require resources used by their parents. "
-                  + "Command "
-                  + command
-                  + " requires these resources that are not used by "
-                  + currentCommand
-                  + ": "
-                  + disallowedResources);
-        }
-      }
+    // If scheduled within a composition, prevent the composition from scheduling multiple
+    // conflicting commands
+    var siblings = potentialSiblings();
+    var conflictingSibling = siblings.stream().filter(command::conflictsWith).findFirst();
+    if (conflictingSibling.isPresent()) {
+      var conflicts = new ArrayList<>(command.requirements());
+      conflicts.retainAll(conflictingSibling.get().requirements());
+      throw new IllegalArgumentException(
+          "Command " + command.name()
+              + " requires resources that are already used by "
+              + conflictingSibling.get().name()
+              + ". Both require "
+              + conflicts.stream().map(RequireableResource::getName).collect(Collectors.joining(", ")));
     }
 
     for (var scheduledState : onDeck) {
@@ -245,6 +233,22 @@ public class Scheduler {
     return true;
   }
 
+  private Collection<Command> potentialSiblings() {
+    var siblings = new ArrayList<Command>();
+    for (var state : commandStates.values()) {
+      if (state.parent() != null && state.parent() == currentCommand) {
+        siblings.add(state.command());
+      }
+    }
+    for (var state : onDeck) {
+      if (state.parent() != null && state.parent() == currentCommand) {
+        siblings.add(state.command());
+      }
+    }
+
+    return siblings;
+  }
+
   private void evictConflictingOnDeckCommands(Command command) {
     for (var iterator = onDeck.iterator(); iterator.hasNext(); ) {
       var scheduledState = iterator.next();
@@ -278,17 +282,6 @@ public class Scheduler {
   }
 
   /**
-   * Schedules and waits for a command to complete. Shorthand for {@code schedule(command);
-   * waitFor(command);}.
-   *
-   * @param command the command to schedule
-   */
-  public void scheduleAndWait(Command command) {
-    schedule(command);
-    await(command);
-  }
-
-  /**
    * Checks if a particular command is an ancestor of another.
    *
    * @param state the state to check
@@ -297,15 +290,23 @@ public class Scheduler {
    */
   private boolean inheritsFrom(CommandState state, Command ancestor) {
     if (state.parent() == null) {
+      // No parent, cannot inherit
       return false;
     }
     if (!commandStates.containsKey(ancestor)) {
+      // The given ancestor isn't running
       return false;
     }
     if (state.parent() == ancestor) {
+      // Direct child
       return true;
     }
-    return commandStates.values().stream().anyMatch(s -> inheritsFrom(s, ancestor));
+    // Check if the command's parent inherits from the given ancestor
+    return commandStates
+               .values()
+               .stream()
+               .filter(s -> state.parent() == s.command())
+               .anyMatch(s -> inheritsFrom(s, ancestor));
   }
 
   /**
@@ -436,14 +437,17 @@ public class Scheduler {
    * @param parent the root command whose descendants to remove from the scheduler
    */
   private void removeOrphanedChildren(Command parent) {
-    for (var iterator = commandStates.values().iterator(); iterator.hasNext(); ) {
-      var state = iterator.next();
-      if (state.parent() == parent) {
-        iterator.remove();
-        removeOrphanedChildren(state.command());
-        suspendedStates.remove(state);
-      }
-    }
+    commandStates
+        .entrySet()
+        .stream()
+        .filter(e -> e.getValue().parent() == parent)
+        .toList() // copy to an intermediate list to avoid concurrent modification
+        .forEach(e -> {
+          commandStates.entrySet().remove(e);
+          suspendedStates.removeIf(s -> s.parent() == e.getKey());
+          onDeck.removeIf(s -> s.parent() == e.getKey());
+          removeOrphanedChildren(e.getKey()); // recursion
+        });
   }
 
   /**
@@ -496,12 +500,19 @@ public class Scheduler {
   }
 
   /**
-   * When called from a command group or composition, this method will keep that group paused until
-   * the specified command completes.
+   * A running command may await completion of another command. The running command will be paused
+   * until the command that is awaited upon completes. If the awaited command is not already
+   * running, it will be scheduled and will start running the next time the {@link #run()} method
+   * is called.
    *
    * @param command the command to wait for
+   * @throws IllegalStateException if not called from a running command
    */
   public void await(Command command) {
+    if (currentCommand == null) {
+      throw new IllegalStateException("Cannot await outside a command!");
+    }
+
     checkWaitable(command);
 
     while (isScheduledOrRunning(command)) {
@@ -510,12 +521,28 @@ public class Scheduler {
   }
 
   /**
-   * When called from a command group or composition, this method will keep that group paused until
-   * every specified command completes.
+   * A running command may await completion of multiple commands at once. The running command will
+   * be paused until every command that is awaited on completes. Any awaited command that is not
+   * already running will be scheduled and start running the next time the {@link #run()} method
+   * is called.
+   *
+   * <p>Depending on the command requirements, any resources required by a command that finishes
+   * early may not have its default command run or suspended commands resume, and will therefore
+   * be in an <i>uncommanded</i> state. This occurs if the invoking (or "parent") command also
+   * requires resources used by an awaited (or "child") command; while a "child" command that
+   * requires a resource also required by its "parent" will not cancel its parent, when it finishes,
+   * that resource is still required by the parent even if the parent is not actively using it. If
+   * you need a resource to be able to run its default command, or have suspended commands resume,
+   * when a child command finishes, simply drop the requirement for that resource from the parent.
    *
    * @param commands the commands to wait for
+   * @throws IllegalStateException if not called from a running command
    */
   public void awaitAll(Collection<Command> commands) {
+    if (currentCommand == null) {
+      throw new IllegalStateException("Cannot await outside a command!");
+    }
+
     for (var command : commands) {
       checkWaitable(command);
     }
@@ -527,12 +554,20 @@ public class Scheduler {
   }
 
   /**
-   * When called from a command group or composition, this method will keep that group paused until
-   * any of the specified commands completes.
+   * A running command may await completion of multiple commands at once. The running command will
+   * be paused until <i>any</i> command that is awaited on completes. Once the first awaited on
+   * command completes, the rest of the awaited commands are canceled and the running command will
+   * be resumed. Any awaited command that is not already running will be scheduled and start running
+   * the next time the {@link #run()} method is called.
    *
    * @param commands the commands to wait for
+   * @throws IllegalStateException if not called from a running command
    */
   public void awaitAny(Collection<Command> commands) {
+    if (currentCommand == null) {
+      throw new IllegalStateException("Cannot await outside a command!");
+    }
+
     for (var command : commands) {
       checkWaitable(command);
     }
@@ -541,6 +576,9 @@ public class Scheduler {
     while (commands.stream().allMatch(this::isScheduledOrRunning)) {
       this.yield();
     }
+
+    // Cancel any command that's still running after the first one completes
+    commands.forEach(this::cancel);
   }
 
   /**
@@ -585,10 +623,16 @@ public class Scheduler {
   }
 
   /**
-   * Cancels all currently running commands, then starts the default commands for any resources that
-   * had canceled commands. A default command that is currently running will not be canceled.
+   * Cancels all currently running commands.
    */
   public void cancelAll() {
+    // Remove scheduled children of running commands
+    onDeck.removeIf(s -> commandStates.containsKey(s.parent()));
+
+    // Remove suspended children of running commands
+    suspendedStates.removeIf(s -> commandStates.containsKey(s.parent()));
+
+    // Finally, remove running commands
     commandStates.clear();
   }
 
