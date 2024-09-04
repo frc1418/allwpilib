@@ -91,6 +91,14 @@ public interface Command {
   void run(Coroutine coroutine);
 
   /**
+   * An optional lifecycle hook that can be implemented to execute some code whenever this command
+   * is cancelled before it naturally completes.
+   */
+  default void onCancel() {
+    // NOP by default
+  }
+
+  /**
    * The name of the command.
    *
    * @return the name of the command

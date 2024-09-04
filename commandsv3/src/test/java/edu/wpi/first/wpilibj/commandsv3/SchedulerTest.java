@@ -3,12 +3,11 @@ package edu.wpi.first.wpilibj.commandsv3;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -454,6 +453,75 @@ class SchedulerTest {
         fail("Unexpected exception: " + e);
       }
     }
+  }
+
+  @Test
+  void doesNotRunOnCancelWhenInterruptingOnDeck() {
+    var ran = new AtomicBoolean(false);
+
+    var resource = new RequireableResource("The Resource", scheduler);
+    var cmd = resource.run(Coroutine::yield).whenCanceled(() -> ran.set(true)).named("cmd");
+    var interrupter = resource.run(Coroutine::yield).named("Interrupter");
+    scheduler.schedule(cmd);
+    scheduler.schedule(interrupter);
+    scheduler.run();
+
+    assertFalse(ran.get(), "onCancel ran when it shouldn't have!");
+  }
+
+  @Test
+  void doesNotRunOnCancelWhenInterruptingCommand() {
+    var ran = new AtomicBoolean(false);
+
+    var resource = new RequireableResource("The Resource", scheduler);
+    var cmd = resource.run(Coroutine::yield).whenCanceled(() -> ran.set(true)).named("cmd");
+    var interrupter = resource.run(Coroutine::yield).named("Interrupter");
+    scheduler.schedule(cmd);
+    scheduler.run();
+    scheduler.schedule(interrupter);
+
+    assertFalse(ran.get(), "onCancel ran when it shouldn't have!");
+  }
+
+  @Test
+  void doesNotRunOnCancelWhenCompleting() {
+    var ran = new AtomicBoolean(false);
+
+    var resource = new RequireableResource("The Resource", scheduler);
+    var cmd = resource.run(Coroutine::yield).whenCanceled(() -> ran.set(true)).named("cmd");
+    scheduler.schedule(cmd);
+    scheduler.run();
+    scheduler.run();
+
+    assertFalse(scheduler.isScheduledOrRunning(cmd));
+    assertFalse(ran.get(), "onCancel ran when it shouldn't have!");
+  }
+
+  @Test
+  void runsOnCancelWhenCancelling() {
+    var ran = new AtomicBoolean(false);
+
+    var resource = new RequireableResource("The Resource", scheduler);
+    var cmd = resource.run(Coroutine::yield).whenCanceled(() -> ran.set(true)).named("cmd");
+    scheduler.schedule(cmd);
+    scheduler.cancel(cmd);
+
+    assertTrue(ran.get(), "onCancel should have run!");
+  }
+
+  @Test
+  void runsOnCancelWhenCancellingParent() {
+    var ran = new AtomicBoolean(false);
+
+    var resource = new RequireableResource("The Resource", scheduler);
+    var cmd = resource.run(Coroutine::yield).whenCanceled(() -> ran.set(true)).named("cmd");
+
+    var group = new Sequence("Seq", Collections.singletonList(cmd));
+    scheduler.schedule(group);
+    scheduler.run();
+    scheduler.cancel(group);
+
+    assertTrue(ran.get(), "onCancel should have run!");
   }
 
   record PriorityCommand(int priority, RequireableResource... subsystems) implements Command {

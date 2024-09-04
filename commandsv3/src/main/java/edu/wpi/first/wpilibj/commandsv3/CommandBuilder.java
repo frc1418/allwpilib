@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 public class CommandBuilder {
   private final Set<RequireableResource> requirements = new HashSet<>();
   private Consumer<Coroutine> impl;
+  private Runnable onCancel = () -> {};
   private String name;
   private int priority = Command.DEFAULT_PRIORITY;
   private Command.RobotDisabledBehavior disabledBehavior =
@@ -68,6 +69,11 @@ public class CommandBuilder {
     return this;
   }
 
+  public CommandBuilder whenCanceled(Runnable onCancel) {
+    this.onCancel = onCancel;
+    return this;
+  }
+
   public Command make() {
     Objects.requireNonNull(name, "Name was not specified");
     Objects.requireNonNull(impl, "Command logic was not specified");
@@ -76,6 +82,11 @@ public class CommandBuilder {
       @Override
       public void run(Coroutine coroutine) {
         impl.accept(coroutine);
+      }
+
+      @Override
+      public void onCancel() {
+        onCancel.run();
       }
 
       @Override

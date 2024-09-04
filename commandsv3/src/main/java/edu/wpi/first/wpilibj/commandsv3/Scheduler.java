@@ -336,12 +336,20 @@ public class Scheduler {
    * @param command the command to cancel
    */
   public void cancel(Command command) {
+    boolean running = isRunning(command);
+
     // Evict the command. The next call to run() will schedule the default command for all its
     // required resources, unless another command requiring those resources is scheduled between
     // calling cancel() and calling run()
     commandStates.remove(command);
     onDeck.removeIf(state -> state.command() == command);
     suspendedStates.removeIf(state -> state.command() == command);
+
+    if (running) {
+      // Only run the hook if the command was running. If it was on deck, suspended, or not
+      // even in the scheduler at the time, then there's nothing to do
+      command.onCancel();
+    }
 
     // Clean up any orphaned child commands; their lifespan must not exceed the parent's
     removeOrphanedChildren(command);
@@ -499,12 +507,7 @@ public class Scheduler {
         .stream()
         .filter(e -> e.getValue().parent() == parent)
         .toList() // copy to an intermediate list to avoid concurrent modification
-        .forEach(e -> {
-          commandStates.entrySet().remove(e);
-          suspendedStates.removeIf(s -> s.parent() == e.getKey());
-          onDeck.removeIf(s -> s.parent() == e.getKey());
-          removeOrphanedChildren(e.getKey()); // recursion
-        });
+        .forEach(e -> cancel(e.getKey()));
   }
 
   /**
