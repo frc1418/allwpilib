@@ -15,7 +15,7 @@ public class CommandExecutionException extends RuntimeException {
    * @param cause the exception itself
    */
   public CommandExecutionException(Command command, Throwable cause) {
-    super("An exception was detected while running command " + command, cause);
+    super("An exception was detected while running command " + command.name(), cause);
     this.command = command;
   }
 

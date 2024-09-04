@@ -43,7 +43,12 @@ public interface Coroutine {
     if (!scheduler().isScheduledOrRunning(command)) {
       scheduler().schedule(command);
     }
-    scheduler().await(command);
+
+    if (scheduler().isScheduledOrRunning(command)) {
+      // If the command is a one-shot, then the schedule call will completely execute the command.
+      // There would be nothing to await
+      scheduler().await(command);
+    }
   }
 
   /**

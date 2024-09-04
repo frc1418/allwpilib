@@ -84,8 +84,14 @@ public class ParallelGroup implements Command {
   @Override
   public void run(Coroutine coroutine) {
     if (requiredCommands.isEmpty()) {
+      // No command is explicitly required to complete
+      // Schedule everything and wait for the first one to complete
       coroutine.awaitAny(commands);
     } else {
+      // At least one command is required to complete
+      // Schedule all the non-required commands (the scheduler will automatically cancel them
+      // when this group completes), and await completion of all the required commands
+      commands.forEach(coroutine.scheduler()::schedule);
       coroutine.awaitAll(requiredCommands);
     }
   }

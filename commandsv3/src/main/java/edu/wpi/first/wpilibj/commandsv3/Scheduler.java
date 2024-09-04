@@ -15,9 +15,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.Stack;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+/**
+ * Manages the lifecycles of {@link Coroutine}-based {@link Command Commands}.
+ */
 public class Scheduler {
   private final Set<RequireableResource> registeredResources = new HashSet<>();
 
@@ -26,6 +30,13 @@ public class Scheduler {
 
   /** The states of all running commands (does not include on deck commands). */
   private final Map<Command, CommandState> commandStates = new LinkedHashMap<>();
+
+  /**
+   * The stack of currently executing commands. Child commands are pushed onto the stack and
+   * popped when they complete. Use {@link #currentState()} and {@link #currentCommand()} to get
+   * the currently executing command or its state.
+   */
+  private final Stack<CommandState> executingCommands = new Stack<>();
 
   /**
    * A priority queue of suspended commands. Suspended commands will be resumed at the end of each
@@ -40,9 +51,6 @@ public class Scheduler {
 
   /** Event loop for trigger bindings. */
   private final EventLoop eventLoop = new EventLoop();
-
-  /** The currently executing command. */
-  private Command currentCommand = null;
 
   /** The scope for continuations to yield to. */
   private final ContinuationScope scope = new ContinuationScope("coroutine commands");
@@ -160,10 +168,12 @@ public class Scheduler {
   /**
    * Schedules a command to run. If a running command schedules another command (for example,
    * parallel groups will do this), then the new command is assumed to be a bound child of the
-   * running command. The scheduling command is expected to have ownership over the scheduled
-   * command, including cancelling it if the parent command completes before the child does (for
-   * example, deadline groups will cancel unfinished child commands when all the required commands
-   * in the group have completed).
+   * running command. Child commands will automatically be cancelled by the scheduler when their
+   * parent command completes or is canceled. Child commands will also immediately begin execution,
+   * without needing to wait for the next {@link #run()} invocation. This allows highly nested
+   * compositions to begin running the actual meaningful commands sooner without needing to wait
+   * one scheduler cycle per nesting level; with the default 20ms update period, 5 levels of nesting
+   * would be enough to delay actions by 100 milliseconds - instead of only 20.
    *
    * @param command the command to schedule
    */
@@ -196,7 +206,7 @@ public class Scheduler {
         // Lower priority than an already-scheduled (but not yet running) command that requires at
         // one of the same resource
         if (command.interruptBehavior() == SuspendOnInterrupt) {
-          suspend(new CommandState(command, currentCommand, buildContinuation(command)));
+          suspend(new CommandState(command, currentCommand(), buildContinuation(command)));
         }
         return;
       }
@@ -207,15 +217,24 @@ public class Scheduler {
     // so at this point we're guaranteed to be >= priority than anything already on deck
     evictConflictingOnDeckCommands(command);
 
-    var state = new CommandState(command, currentCommand, buildContinuation(command));
+    var state = new CommandState(command, currentCommand(), buildContinuation(command));
     onDeck.add(state);
 
     // Immediately evict any conflicting running command, except for commands in its ancestry
     evictConflictingRunningCommands(state);
+
+    if (currentState() != null) {
+      // Scheduling a child command while running. Start it immediately instead of waiting a full
+      // cycle. This prevents issues with deeply nested command groups taking many scheduler cycles
+      // to start running the commands that actually /do/ things
+      commandStates.put(command, state);
+      onDeck.remove(state);
+      runCommand(state);
+    }
   }
 
   private boolean isSchedulable(Command command) {
-    if (currentCommand != null) {
+    if (currentState() != null) {
       // Bypass scheduling check if being scheduled as a nested command.
       // The schedule() method will throw an error when attempting to schedule a nested command
       // that requires a resource that the parent doesn't
@@ -236,12 +255,12 @@ public class Scheduler {
   private Collection<Command> potentialSiblings() {
     var siblings = new ArrayList<Command>();
     for (var state : commandStates.values()) {
-      if (state.parent() != null && state.parent() == currentCommand) {
+      if (state.parent() != null && state.parent() == currentCommand()) {
         siblings.add(state.command());
       }
     }
     for (var state : onDeck) {
-      if (state.parent() != null && state.parent() == currentCommand) {
+      if (state.parent() != null && state.parent() == currentCommand()) {
         siblings.add(state.command());
       }
     }
@@ -376,31 +395,69 @@ public class Scheduler {
 
   private void runCommands() {
     // Tick every command that hasn't been completed yet
-    for (var entry : List.copyOf(commandStates.entrySet())) {
-      final var command = entry.getKey();
-      var continuation = entry.getValue().continuation();
-
-      if (!commandStates.containsKey(command)) {
-        // Probably canceled by an owning composition, do not run
-        continue;
-      }
-
-      currentCommand = command;
-      Continuation.mountContinuation(continuation);
-      try {
-        continuation.run();
-      } finally {
-        currentCommand = null;
-        Continuation.mountContinuation(null);
-      }
-
-      if (continuation.isDone()) {
-        // Immediately check if the command has completed and remove any children commands.
-        // This prevents child commands from being executed one extra time in the run() loop
-        commandStates.remove(command);
-        removeOrphanedChildren(command);
-      }
+    for (var state : List.copyOf(commandStates.values())) {
+      runCommand(state);
     }
+  }
+
+  private void runCommand(CommandState state) {
+    final var command = state.command();
+    var continuation = state.continuation();
+
+    if (!commandStates.containsKey(command)) {
+      // Probably canceled by an owning composition, do not run
+      return;
+    }
+
+    var previousState = currentState();
+    var previousContinuation = previousState == null ? null : previousState.continuation();
+
+    Continuation.mountContinuation(continuation);
+    try {
+      executingCommands.push(state);
+      continuation.run();
+    } finally {
+      if (currentState() == state) {
+        // Remove the command we just ran from the top of the stack
+        executingCommands.pop();
+      }
+      Continuation.mountContinuation(previousContinuation);
+    }
+
+    if (continuation.isDone()) {
+      // Immediately check if the command has completed and remove any children commands.
+      // This prevents child commands from being executed one extra time in the run() loop
+      commandStates.remove(command);
+      removeOrphanedChildren(command);
+    }
+  }
+
+  /**
+   * Gets the currently executing command state, or null if no command is currently executing.
+   *
+   * @return the currently executing command state
+   */
+  private CommandState currentState() {
+    if (executingCommands.isEmpty()) {
+      // Avoid EmptyStackException
+      return null;
+    }
+
+    return executingCommands.peek();
+  }
+
+  /**
+   * Gets the currently executing command, or null if no command is currently executing.
+   *
+   * @return the currently executing command
+   */
+  private Command currentCommand() {
+    var state = currentState();
+    if (state == null) {
+      return null;
+    }
+
+    return state.command();
   }
 
   private void resumeSuspendedCommands() {
@@ -509,7 +566,7 @@ public class Scheduler {
    * @throws IllegalStateException if not called from a running command
    */
   public void await(Command command) {
-    if (currentCommand == null) {
+    if (currentState() == null) {
       throw new IllegalStateException("Cannot await outside a command!");
     }
 
@@ -539,7 +596,7 @@ public class Scheduler {
    * @throws IllegalStateException if not called from a running command
    */
   public void awaitAll(Collection<Command> commands) {
-    if (currentCommand == null) {
+    if (currentState() == null) {
       throw new IllegalStateException("Cannot await outside a command!");
     }
 
@@ -564,7 +621,7 @@ public class Scheduler {
    * @throws IllegalStateException if not called from a running command
    */
   public void awaitAny(Collection<Command> commands) {
-    if (currentCommand == null) {
+    if (currentState() == null) {
       throw new IllegalStateException("Cannot await outside a command!");
     }
 
@@ -587,16 +644,18 @@ public class Scheduler {
    * @param command the command to check
    */
   private void checkWaitable(Command command) {
-    if (!isScheduledOrRunning(command)) {
+    final CommandState state;
+
+    if (isRunning(command)) {
+      state = commandStates.get(command);
+    } else if (isScheduled(command)) {
+      state = onDeck.stream().filter(s -> s.command() == command).findFirst().orElseThrow();
+    } else {
       throw new IllegalStateException(
           "Cannot wait for command " + command + " because it is not currently running");
     }
 
-    var state =
-        commandStates.getOrDefault(
-            command, onDeck.stream().filter(s -> s.command() == command).findFirst().orElseThrow());
-
-    if (state.parent() != null && state.parent() != currentCommand) {
+    if (state.parent() != null && state.parent() != currentCommand()) {
       throw new IllegalStateException("Only " + state.parent() + " can wait for " + command);
     }
   }
@@ -623,7 +682,8 @@ public class Scheduler {
   }
 
   /**
-   * Cancels all currently running commands.
+   * Cancels all currently running commands. Commands that are scheduled that haven't yet started
+   * will remain scheduled, and will start on the next call to {@link #run()}.
    */
   public void cancelAll() {
     // Remove scheduled children of running commands

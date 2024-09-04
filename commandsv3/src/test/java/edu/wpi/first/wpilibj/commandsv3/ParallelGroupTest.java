@@ -45,14 +45,14 @@ class ParallelGroupTest {
     var parallel = new ParallelGroup("Parallel", List.of(c1, c2), List.of(c1, c2));
     scheduler.schedule(parallel);
 
-    // First call to run() should schedule the commands
+    // First call to run() should schedule and start the commands
     scheduler.run();
     assertTrue(scheduler.isRunning(parallel));
-    assertTrue(scheduler.isScheduled(c1));
-    assertTrue(scheduler.isScheduled(c2));
+    assertTrue(scheduler.isRunning(c1));
+    assertTrue(scheduler.isRunning(c2));
 
     // Next call to run() should start them
-    for (int i = 0; i < 5; i++) {
+    for (int i = 1; i < 5; i++) {
       scheduler.run();
       assertTrue(scheduler.isRunning(c1));
       assertTrue(scheduler.isRunning(c2));
@@ -67,12 +67,14 @@ class ParallelGroupTest {
       assertEquals(5, c1Count.get());
       assertEquals(i, c2Count.get());
     }
-    // one final run() should unschedule the c2 command and then the parallel command
+    // one final run() should unschedule the c2 command
     scheduler.run();
-    scheduler.run();
-    assertFalse(scheduler.isRunning(parallel));
     assertFalse(scheduler.isRunning(c1));
     assertFalse(scheduler.isRunning(c2));
+
+    // the next run should complete the group
+    scheduler.run();
+    assertFalse(scheduler.isRunning(parallel));
 
     // and final counts should be 5 and 10
     assertEquals(5, c1Count.get());
@@ -112,10 +114,10 @@ class ParallelGroupTest {
     // First call to run() should schedule the commands
     scheduler.run();
     assertTrue(scheduler.isRunning(race));
-    assertTrue(scheduler.isScheduled(c1));
-    assertTrue(scheduler.isScheduled(c2));
+    assertTrue(scheduler.isRunning(c1));
+    assertTrue(scheduler.isRunning(c2));
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 1; i < 5; i++) {
       scheduler.run();
       assertTrue(scheduler.isRunning(c1));
       assertTrue(scheduler.isRunning(c2));
@@ -123,9 +125,12 @@ class ParallelGroupTest {
       assertEquals(i, c2Count.get());
     }
     scheduler.run(); // complete c1
+    assertTrue(scheduler.isRunning(race));
+    assertFalse(scheduler.isRunning(c1));
+    assertTrue(scheduler.isRunning(c2));
+
     scheduler.run(); // complete parallel and cleanup
     assertFalse(scheduler.isRunning(race));
-    assertFalse(scheduler.isRunning(c1));
     assertFalse(scheduler.isRunning(c2));
 
     // and final counts should be 5 and 5
@@ -159,39 +164,35 @@ class ParallelGroupTest {
     assertFalse(scheduler.isScheduledOrRunning(inner));
     assertFalse(scheduler.isScheduledOrRunning(command));
 
-    // First run: Inner group should be scheduled, command shouldn't be yet
-    scheduler.run();
-    assertTrue(scheduler.isRunning(outer));
-    assertTrue(scheduler.isScheduled(inner));
-    assertFalse(scheduler.isScheduledOrRunning(command));
-
-    // Second run: Outer and inner should both be running, command should be scheduled
+    // First run: Inner group and command should both be scheduled and running
     scheduler.run();
     assertTrue(scheduler.isRunning(outer), "Outer group should be running");
     assertTrue(scheduler.isRunning(inner), "Inner group should be running");
-    assertTrue(scheduler.isScheduled(command), "Command should be scheduled");
+    assertTrue(scheduler.isRunning(command), "Command should be running");
+    assertEquals(0, count.get());
 
-    // Runs 3 through 8: Outer and inner should both be running while the command runs
-    for (int i = 0; i < 5; i++) {
+    // Runs 2 through 5: Outer and inner should both be running while the command runs
+    for (int i = 1; i < 5; i++) {
       scheduler.run();
       assertTrue(scheduler.isRunning(outer), "Outer group should be running");
       assertTrue(scheduler.isRunning(inner), "Inner group should be running");
-      assertTrue(scheduler.isRunning(command), "Command should be running");
+      assertTrue(scheduler.isRunning(command), "Command should be running (" + i + ")");
+      assertEquals(i, count.get());
     }
 
-    // Run 9: Command should have completed naturally
+    // Run 6: Command should have completed naturally
     scheduler.run();
     assertTrue(scheduler.isRunning(outer), "Outer group should be running");
     assertTrue(scheduler.isRunning(inner), "Inner group should be running");
     assertFalse(scheduler.isRunning(command), "Command should have completed");
 
-    // Run 10: Having seen the command complete, inner group should exit
+    // Run 7: Having seen the command complete, inner group should exit
     scheduler.run();
     assertTrue(scheduler.isRunning(outer), "Outer group should be running");
     assertFalse(scheduler.isRunning(inner), "Inner group should have completed");
     assertFalse(scheduler.isRunning(command), "Command should have completed");
 
-    // Run 11: Having seen the inner group complete, outer group should now exit
+    // Run 8: Having seen the inner group complete, outer group should now exit
     scheduler.run();
     assertFalse(scheduler.isRunning(outer), "Outer group should be running");
     assertFalse(scheduler.isRunning(inner), "Inner group should have completed");

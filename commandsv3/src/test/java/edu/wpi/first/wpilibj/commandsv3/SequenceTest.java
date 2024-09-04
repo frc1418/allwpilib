@@ -22,22 +22,17 @@ class SequenceTest {
     var sequence = new Sequence("The Sequence", List.of(command));
     scheduler.schedule(sequence);
 
-    // First run - the composed command is scheduled
-    scheduler.run();
-    assertTrue(scheduler.isRunning(sequence));
-    assertTrue(scheduler.isScheduled(command));
-
-    // Second run - starts running the composed command
+    // First run - the composed command is scheduled and starts
     scheduler.run();
     assertTrue(scheduler.isRunning(sequence));
     assertTrue(scheduler.isRunning(command));
 
-    // Third run - sequence continues and composed command completes
+    // Second run - the composed command completes
     scheduler.run();
     assertTrue(scheduler.isRunning(sequence));
     assertFalse(scheduler.isRunning(command));
 
-    // Fourth run - sequence sees the composed command is done and completes
+    // Third run - sequence sees the composed command is done and completes
     scheduler.run();
     assertFalse(scheduler.isRunning(sequence));
     assertFalse(scheduler.isRunning(command));
@@ -51,46 +46,32 @@ class SequenceTest {
     var sequence = new Sequence("C1 > C2", List.of(c1, c2));
     scheduler.schedule(sequence);
 
-    // First run - c1 is scheduled
+    // First run - c1 is scheduled and starts
+    scheduler.run();
+    assertTrue(scheduler.isRunning(sequence), "Sequence should be running");
+    assertTrue(scheduler.isRunning(c1), "Starting the sequence should start the first command");
+    assertFalse(scheduler.isScheduledOrRunning(c2), "The second command should still be pending completion of the first command");
+
+    // Second run - c1 completes
     scheduler.run();
     assertTrue(scheduler.isRunning(sequence));
-    assertTrue(scheduler.isScheduled(c1));
-    assertFalse(scheduler.isScheduledOrRunning(c2));
+    assertFalse(scheduler.isRunning(c1), "First command should have completed");
+    assertFalse(scheduler.isScheduledOrRunning(c2), "Second command should not start in the same cycle");
 
-    // Second run - c1 starts running
+    // Third run - c2 is scheduled and starts
     scheduler.run();
     assertTrue(scheduler.isRunning(sequence));
-    assertTrue(scheduler.isRunning(c1));
-    assertFalse(scheduler.isScheduledOrRunning(c2));
+    assertTrue(scheduler.isRunning(c2), "Second command should have started");
 
-    // Third run - c1 stops
+    // Fourth run - c2 completes
     scheduler.run();
     assertTrue(scheduler.isRunning(sequence));
-    assertFalse(scheduler.isRunning(c1));
-    assertFalse(scheduler.isScheduledOrRunning(c2));
+    assertFalse(scheduler.isRunning(c2), "Second command should have completed");
 
-    // Fourth run - c2 starts
+    // Fifth run - sequence completes
     scheduler.run();
-    assertTrue(scheduler.isRunning(sequence));
-    assertFalse(scheduler.isScheduledOrRunning(c1));
-    assertTrue(scheduler.isScheduled(c2));
-
-    // Fifth run - c2 starts running
-    scheduler.run();
-    assertTrue(scheduler.isRunning(sequence));
-    assertFalse(scheduler.isScheduledOrRunning(c1));
-    assertTrue(scheduler.isRunning(c2));
-
-    // Sixth run - c2 completes
-    scheduler.run();
-    assertTrue(scheduler.isRunning(sequence));
-    assertFalse(scheduler.isScheduledOrRunning(c1));
-    assertFalse(scheduler.isScheduledOrRunning(c2));
-
-    // Seventh run - sequence completes
-    scheduler.run();
-    assertFalse(scheduler.isRunning(sequence));
-    assertFalse(scheduler.isScheduledOrRunning(c1));
-    assertFalse(scheduler.isScheduledOrRunning(c2));
+    assertFalse(scheduler.isRunning(sequence), "Sequence should have completed");
+    assertFalse(scheduler.isRunning(c1), "First command should have stopped");
+    assertFalse(scheduler.isRunning(c2), "Second command should have stopped");
   }
 }
