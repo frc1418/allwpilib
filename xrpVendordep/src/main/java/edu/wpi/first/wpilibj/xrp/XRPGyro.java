@@ -8,6 +8,12 @@ import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.hal.SimDevice.Direction;
 import edu.wpi.first.hal.SimDouble;
 
+/**
+ * Use a rate gyro to return the robots heading relative to a starting position.
+ *
+ * <p>This class is for the XRP onboard gyro, and will only work in simulation/XRP mode. Only one
+ * instance of a XRPGyro is supported.
+ */
 public class XRPGyro {
   private final SimDevice m_simDevice;
   private final SimDouble m_simRateX;
@@ -21,7 +27,11 @@ public class XRPGyro {
   private double m_angleYOffset;
   private double m_angleZOffset;
 
-  /** Create a new XRPGyro. */
+  /**
+   * Constructs an XRPGyro.
+   *
+   * <p>Only one instance of a XRPGyro is supported.
+   */
   public XRPGyro() {
     m_simDevice = SimDevice.create("Gyro:XRPGyro");
     if (m_simDevice != null) {
@@ -130,10 +140,27 @@ public class XRPGyro {
     }
   }
 
+  /**
+   * Return the actual angle in degrees that the robot is currently facing.
+   *
+   * <p>The angle is based on integration of the returned rate form the gyro. The angle is
+   * continuous, that is, it will continue from 360->361 degrees. This allows algorithms that
+   * wouldn't want to see a discontinuity in the gyro output as it sweeps from 360 to 0 on the
+   * second time around.
+   *
+   * @return the current heading of the robot in degrees.
+   */
   public double getAngle() {
     return getAngleZ();
   }
 
+  /**
+   * Return the rate of rotation of the gyro
+   *
+   * <p>The rate is based on the most recent reading of the gyro.
+   *
+   * @return the current rate in degrees per second
+   */
   public double getRate() {
     return getRateZ();
   }
