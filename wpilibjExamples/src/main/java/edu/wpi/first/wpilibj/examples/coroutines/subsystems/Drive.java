@@ -6,8 +6,7 @@ package edu.wpi.first.wpilibj.examples.coroutines.subsystems;
 
 import static edu.wpi.first.units.Units.Meters;
 
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.commandsv3.Command;
@@ -86,7 +85,7 @@ public class Drive extends RequireableResource {
    * @param distance The distance to drive forward in meters
    * @param speed The fraction of max speed at which to drive
    */
-  public Command driveDistanceCommand(Measure<Distance> distance, double speed) {
+  public Command driveDistanceCommand(Distance distance, double speed) {
     double distanceMeters = distance.in(Meters);
 
     return run((coroutine) -> {
@@ -99,6 +98,6 @@ public class Drive extends RequireableResource {
       }
 
       m_drive.stopMotor();
-    }).named("DriveDistance[" + distanceMeters + "m, @" + speed + "]");
+    }).named("DriveDistance[" + distance.toLongString() + ", @" + speed + "]");
   }
 }

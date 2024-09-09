@@ -2,16 +2,15 @@ package edu.wpi.first.wpilibj.commandsv3;
 
 import static edu.wpi.first.units.Units.Seconds;
 
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Time;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Timer;
 import java.util.Set;
 
 /** A command with no requirements that merely waits for a specified duration of time to elapse. */
 public class WaitCommand implements Command {
-  private final Measure<Time> duration;
+  private final Time duration;
 
-  public WaitCommand(Measure<Time> duration) {
+  public WaitCommand(Time duration) {
     this.duration = duration;
   }
 

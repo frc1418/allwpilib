@@ -1,7 +1,6 @@
 package edu.wpi.first.wpilibj.commandsv3;
 
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Time;
+import edu.wpi.first.units.measure.Time;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -120,7 +119,7 @@ public interface Coroutine {
    *
    * @param duration the duration of time to wait
    */
-  default void wait(Measure<Time> duration) {
+  default void wait(Time duration) {
     await(new WaitCommand(duration));
   }
 

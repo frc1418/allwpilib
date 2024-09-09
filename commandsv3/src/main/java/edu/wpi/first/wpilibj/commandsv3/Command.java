@@ -1,7 +1,6 @@
 package edu.wpi.first.wpilibj.commandsv3;
 
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Time;
+import edu.wpi.first.units.measure.Time;
 import java.util.Collections;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -235,7 +234,7 @@ public interface Command {
    *                values will result in the command running only once before being canceled.
    * @return the timed out command.
    */
-  default Command withTimeout(Measure<Time> timeout) {
+  default Command withTimeout(Time timeout) {
     return ParallelGroup.race(name(), this, new WaitCommand(timeout));
   }
 

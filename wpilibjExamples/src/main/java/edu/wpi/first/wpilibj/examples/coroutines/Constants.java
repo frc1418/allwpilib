@@ -9,11 +9,9 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Time;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Time;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -54,7 +52,7 @@ public final class Constants {
     public static final int kFeederMotorPort = 5;
 
     public static final double kShooterFreeRPS = 5300;
-    public static final Measure<Velocity<Angle>> kShooterTarget = RotationsPerSecond.of(4000);
+    public static final AngularVelocity kShooterTarget = RotationsPerSecond.of(4000);
     public static final double kShooterToleranceRPS = 50;
 
     // These are not real PID gains, and will have to be tuned for your specific robot.
@@ -81,8 +79,8 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final Measure<Time> kTimeout = Seconds.of(3);
-    public static final Measure<Distance> kDriveDistance = Meters.of(2);
+    public static final Time kTimeout = Seconds.of(3);
+    public static final Distance kDriveDistance = Meters.of(2);
     public static final double kDriveSpeed = 0.5;
   }
 

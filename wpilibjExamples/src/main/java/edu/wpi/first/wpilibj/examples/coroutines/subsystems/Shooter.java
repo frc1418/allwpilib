@@ -5,12 +5,11 @@
 package edu.wpi.first.wpilibj.examples.coroutines.subsystems;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.commandsv3.RequireableResource;
 import edu.wpi.first.wpilibj.examples.coroutines.Constants.ShooterConstants;
@@ -46,9 +45,9 @@ public class Shooter extends RequireableResource {
         .named("Idle"));
   }
 
-  public void ramp(Measure<Velocity<Angle>> setpoint) {
+  public void ramp(AngularVelocity setpoint) {
     m_shooterMotor.set(
-        m_shooterFeedforward.calculate(setpoint.in(RotationsPerSecond))
+        m_shooterFeedforward.calculate(setpoint).in(Volts)
             + m_shooterFeedback.calculate(
             m_shooterEncoder.getRate(), setpoint.in(RotationsPerSecond)));
   }

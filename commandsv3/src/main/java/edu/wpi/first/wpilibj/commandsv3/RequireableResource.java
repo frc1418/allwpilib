@@ -1,7 +1,6 @@
 package edu.wpi.first.wpilibj.commandsv3;
 
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Time;
+import edu.wpi.first.units.measure.Time;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -57,7 +56,7 @@ public class RequireableResource {
     return new IdleCommand(this);
   }
 
-  public Command idle(Measure<Time> duration) {
+  public Command idle(Time duration) {
     return idle().withTimeout(duration);
   }
 
