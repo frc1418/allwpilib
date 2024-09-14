@@ -78,12 +78,6 @@ public final class Units {
   /** Alias for {@link #Microseconds} to make combined unit definitions read more smoothly. */
   public static final TimeUnit Microsecond = Microseconds; // singularized alias
 
-  /** 1/1,000,000,000 of a {@link #Seconds Second}. */
-  public static final Time Nanoseconds = derive(Seconds).splitInto(1e9).named("Nanosecond").symbol("ns").make();
-
-  /** 1/1,000,000,000 of a {@link #Seconds Second}. */
-  public static final Time Nanosecond = Nanoseconds; // singularized alias
-
   /** 60 {@link #Seconds}. */
   public static final TimeUnit Minutes =
       derive(Seconds).aggregate(60).named("Minute").symbol("min").make();
