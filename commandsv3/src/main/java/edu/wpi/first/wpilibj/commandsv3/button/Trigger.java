@@ -10,6 +10,10 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.commandsv3.Command;
 import edu.wpi.first.wpilibj.commandsv3.Scheduler;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 
 /**
@@ -25,6 +29,55 @@ public class Trigger implements BooleanSupplier {
   private final BooleanSupplier m_condition;
   private final EventLoop m_loop;
   private final Scheduler scheduler = Scheduler.getInstance();
+  private Signal m_previousSignal = null;
+  private final Map<BindingType, List<Command>> m_bindings = new EnumMap<>(BindingType.class);
+  private final Runnable m_eventLoopCallback = this::poll;
+
+  /**
+   * Represents the state of a signal: high or low. Used instead of a boolean for nullity on the
+   * first run, when the previous signal value is undefined and unknown.
+   */
+  private enum Signal {
+    /** The signal is high. */
+    HIGH,
+    /** The signal is low. */
+    LOW
+  }
+
+  private enum BindingType {
+    /**
+     * Schedules (forks) a command on a rising edge signal. The command will run until it completes
+     * or is interrupted by another command requiring the same resources.
+     */
+    SCHEDULE_ON_RISING_EDGE,
+    /**
+     * Schedules (forks) a command on a falling edge signal. The command will run until it completes
+     * or is interrupted by another command requiring the same resources.
+     */
+    SCHEDULE_ON_FALLING_EDGE,
+    /**
+     * Schedules (forks) a command on a rising edge signal. If the command is still running on the
+     * next rising edge, it will be cancelled then; otherwise, it will be scheduled again.
+     */
+    TOGGLE_ON_RISING_EDGE,
+    /**
+     * Schedules (forks) a command on a falling edge signal. If the command is still running on the
+     * next falling edge, it will be cancelled then; otherwise, it will be scheduled again.
+     */
+    TOGGLE_ON_FALLING_EDGE,
+    /**
+     * Schedules a command on a rising edge signal. If the command is still running on the next
+     * falling edge, it will be cancelled then - unlike {@link #SCHEDULE_ON_RISING_EDGE}, which
+     * would allow it to continue to run.
+     */
+    RUN_WHILE_HIGH,
+    /**
+     * Schedules a command on a falling edge signal. If the command is still running on the next
+     * rising edge, it will be cancelled then - unlike {@link #SCHEDULE_ON_FALLING_EDGE}, which
+     * would allow it to continue to run.
+     */
+    RUN_WHILE_LOW
+  }
 
   /**
    * Creates a new trigger based on the given condition.
@@ -45,7 +98,7 @@ public class Trigger implements BooleanSupplier {
    * @param condition the condition represented by this trigger
    */
   public Trigger(BooleanSupplier condition) {
-    this(Scheduler.getInstance().getDefaultButtonLoop(), condition);
+    this(Scheduler.getInstance().getDefaultEventLoop(), condition);
   }
 
   /**
@@ -56,21 +109,7 @@ public class Trigger implements BooleanSupplier {
    */
   public Trigger onTrue(Command command) {
     requireNonNullParam(command, "command", "onTrue");
-    m_loop.bind(
-        new Runnable() {
-          private boolean m_pressedLast = m_condition.getAsBoolean();
-
-          @Override
-          public void run() {
-            boolean pressed = m_condition.getAsBoolean();
-
-            if (!m_pressedLast && pressed) {
-              scheduler.schedule(command);
-            }
-
-            m_pressedLast = pressed;
-          }
-        });
+    addBinding(BindingType.SCHEDULE_ON_RISING_EDGE, command);
     return this;
   }
 
@@ -82,21 +121,7 @@ public class Trigger implements BooleanSupplier {
    */
   public Trigger onFalse(Command command) {
     requireNonNullParam(command, "command", "onFalse");
-    m_loop.bind(
-        new Runnable() {
-          private boolean m_pressedLast = m_condition.getAsBoolean();
-
-          @Override
-          public void run() {
-            boolean pressed = m_condition.getAsBoolean();
-
-            if (m_pressedLast && !pressed) {
-              scheduler.schedule(command);
-            }
-
-            m_pressedLast = pressed;
-          }
-        });
+    addBinding(BindingType.SCHEDULE_ON_FALLING_EDGE, command);
     return this;
   }
 
@@ -111,23 +136,7 @@ public class Trigger implements BooleanSupplier {
    */
   public Trigger whileTrue(Command command) {
     requireNonNullParam(command, "command", "whileTrue");
-    m_loop.bind(
-        new Runnable() {
-          private boolean m_pressedLast = m_condition.getAsBoolean();
-
-          @Override
-          public void run() {
-            boolean pressed = m_condition.getAsBoolean();
-
-            if (!m_pressedLast && pressed) {
-              scheduler.schedule(command);
-            } else if (m_pressedLast && !pressed) {
-              scheduler.cancel(command);
-            }
-
-            m_pressedLast = pressed;
-          }
-        });
+    addBinding(BindingType.RUN_WHILE_HIGH, command);
     return this;
   }
 
@@ -142,23 +151,7 @@ public class Trigger implements BooleanSupplier {
    */
   public Trigger whileFalse(Command command) {
     requireNonNullParam(command, "command", "whileFalse");
-    m_loop.bind(
-        new Runnable() {
-          private boolean m_pressedLast = m_condition.getAsBoolean();
-
-          @Override
-          public void run() {
-            boolean pressed = m_condition.getAsBoolean();
-
-            if (m_pressedLast && !pressed) {
-              scheduler.schedule(command);
-            } else if (!m_pressedLast && pressed) {
-              scheduler.cancel(command);
-            }
-
-            m_pressedLast = pressed;
-          }
-        });
+    addBinding(BindingType.RUN_WHILE_LOW, command);
     return this;
   }
 
@@ -170,25 +163,7 @@ public class Trigger implements BooleanSupplier {
    */
   public Trigger toggleOnTrue(Command command) {
     requireNonNullParam(command, "command", "toggleOnTrue");
-    m_loop.bind(
-        new Runnable() {
-          private boolean m_pressedLast = m_condition.getAsBoolean();
-
-          @Override
-          public void run() {
-            boolean pressed = m_condition.getAsBoolean();
-
-            if (!m_pressedLast && pressed) {
-              if (scheduler.isScheduledOrRunning(command)) {
-                scheduler.cancel(command);
-              } else {
-                scheduler.schedule(command);
-              }
-            }
-
-            m_pressedLast = pressed;
-          }
-        });
+    addBinding(BindingType.TOGGLE_ON_RISING_EDGE, command);
     return this;
   }
 
@@ -200,25 +175,7 @@ public class Trigger implements BooleanSupplier {
    */
   public Trigger toggleOnFalse(Command command) {
     requireNonNullParam(command, "command", "toggleOnFalse");
-    m_loop.bind(
-        new Runnable() {
-          private boolean m_pressedLast = m_condition.getAsBoolean();
-
-          @Override
-          public void run() {
-            boolean pressed = m_condition.getAsBoolean();
-
-            if (m_pressedLast && !pressed) {
-              if (scheduler.isScheduledOrRunning(command)) {
-                scheduler.cancel(command);
-              } else {
-                scheduler.schedule(command);
-              }
-            }
-
-            m_pressedLast = pressed;
-          }
-        });
+    addBinding(BindingType.TOGGLE_ON_FALLING_EDGE, command);
     return this;
   }
 
@@ -287,5 +244,81 @@ public class Trigger implements BooleanSupplier {
             return m_debouncer.calculate(m_condition.getAsBoolean());
           }
         });
+  }
+
+  private void poll() {
+    var signal = signal();
+
+    if (signal == m_previousSignal) {
+      // No change in the signal. Nothing to do
+      return;
+    }
+
+    if (signal == Signal.HIGH) {
+      // Signal is now high when it wasn't before - a rising edge
+      scheduleBindings(BindingType.SCHEDULE_ON_RISING_EDGE);
+      scheduleBindings(BindingType.RUN_WHILE_HIGH);
+      cancelBindings(BindingType.RUN_WHILE_LOW);
+      toggleBindings(BindingType.TOGGLE_ON_RISING_EDGE);
+    }
+
+    if (signal == Signal.LOW) {
+      // Signal is now low when it wasn't before - a falling edge
+      scheduleBindings(BindingType.SCHEDULE_ON_FALLING_EDGE);
+      scheduleBindings(BindingType.RUN_WHILE_LOW);
+      cancelBindings(BindingType.RUN_WHILE_HIGH);
+      toggleBindings(BindingType.TOGGLE_ON_FALLING_EDGE);
+    }
+
+    m_previousSignal = signal;
+  }
+
+  private Signal signal() {
+    if (m_condition.getAsBoolean()) {
+      return Signal.HIGH;
+    } else {
+      return Signal.LOW;
+    }
+  }
+
+  /**
+   * Schedules all commands bound to the given binding type.
+   *
+   * @param bindingType the binding type to schedule
+   */
+  private void scheduleBindings(BindingType bindingType) {
+    m_bindings.getOrDefault(bindingType, List.of()).forEach(scheduler::schedule);
+  }
+
+  /**
+   * Cancels all commands bound to the given binding type.
+   *
+   * @param bindingType the binding type to cancel
+   */
+  private void cancelBindings(BindingType bindingType) {
+    m_bindings.getOrDefault(bindingType, List.of()).forEach(scheduler::cancel);
+  }
+
+  /**
+   * Toggles all commands bound to the given binding type. If a command is currently scheduled or
+   * running, it will be canceled; otherwise, it will be scheduled.
+   *
+   * @param bindingType the binding type to cancel
+   */
+  private void toggleBindings(BindingType bindingType) {
+    m_bindings.getOrDefault(bindingType, List.of()).forEach(command -> {
+      if (scheduler.isScheduledOrRunning(command)) {
+        scheduler.cancel(command);
+      } else {
+        scheduler.schedule(command);
+      }
+    });
+  }
+
+  private void addBinding(BindingType bindingType, Command command) {
+    m_bindings.computeIfAbsent(bindingType, _k -> new ArrayList<>()).add(command);
+
+    // Ensure this trigger is bound to the event loop. NOP if already bound
+    m_loop.bind(m_eventLoopCallback);
   }
 }
