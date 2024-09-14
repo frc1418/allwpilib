@@ -175,15 +175,25 @@ public class Scheduler {
    * one scheduler cycle per nesting level; with the default 20ms update period, 5 levels of nesting
    * would be enough to delay actions by 100 milliseconds - instead of only 20.
    *
+   * <p>Does nothing if the command is already scheduled or running, or requires at least one
+   * resource already used by a higher priority command.</p>
+   *
    * @param command the command to schedule
+   * @throws IllegalArgumentException if scheduled by a command composition that has already
+   *   scheduled another command that shares at least one required resource
    */
   public void schedule(Command command) {
+    if (isScheduledOrRunning(command)) {
+      return;
+    }
+
     if (!isSchedulable(command)) {
       return;
     }
 
     // If scheduled within a composition, prevent the composition from scheduling multiple
     // conflicting commands
+    // TODO: Should we return quietly instead of throwing an exception?
     var siblings = potentialSiblings();
     var conflictingSibling = siblings.stream().filter(command::conflictsWith).findFirst();
     if (conflictingSibling.isPresent()) {
