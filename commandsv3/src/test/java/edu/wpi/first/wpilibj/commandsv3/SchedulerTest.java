@@ -470,6 +470,20 @@ class SchedulerTest {
   }
 
   @Test
+  void doesNotRunOnCancelWhenCancellingOnDeck() {
+    var ran = new AtomicBoolean(false);
+
+    var resource = new RequireableResource("The Resource", scheduler);
+    var cmd = resource.run(Coroutine::yield).whenCanceled(() -> ran.set(true)).named("cmd");
+    scheduler.schedule(cmd);
+    // cancelling before calling .run()
+    scheduler.cancel(cmd);
+    scheduler.run();
+
+    assertFalse(ran.get(), "onCancel ran when it shouldn't have!");
+  }
+
+  @Test
   void doesNotRunOnCancelWhenInterruptingCommand() {
     var ran = new AtomicBoolean(false);
 
@@ -504,6 +518,7 @@ class SchedulerTest {
     var resource = new RequireableResource("The Resource", scheduler);
     var cmd = resource.run(Coroutine::yield).whenCanceled(() -> ran.set(true)).named("cmd");
     scheduler.schedule(cmd);
+    scheduler.run();
     scheduler.cancel(cmd);
 
     assertTrue(ran.get(), "onCancel should have run!");
