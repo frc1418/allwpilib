@@ -41,11 +41,11 @@ public class CommandStadiaController extends CommandGenericHID {
    * Constructs an event instance around the left bumper's digital signal.
    *
    * @return an event instance representing the left bumper's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #leftBumper(EventLoop)
    */
   public Trigger leftBumper() {
-    return leftBumper(Scheduler.getInstance().getDefaultButtonLoop());
+    return leftBumper(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -63,11 +63,11 @@ public class CommandStadiaController extends CommandGenericHID {
    * Constructs an event instance around the right bumper's digital signal.
    *
    * @return an event instance representing the right bumper's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #rightBumper(EventLoop)
    */
   public Trigger rightBumper() {
-    return rightBumper(Scheduler.getInstance().getDefaultButtonLoop());
+    return rightBumper(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -85,11 +85,11 @@ public class CommandStadiaController extends CommandGenericHID {
    * Constructs an event instance around the left stick button's digital signal.
    *
    * @return an event instance representing the left stick button's digital signal attached to the
-   *     {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #leftStick(EventLoop)
    */
   public Trigger leftStick() {
-    return leftStick(Scheduler.getInstance().getDefaultButtonLoop());
+    return leftStick(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -107,11 +107,11 @@ public class CommandStadiaController extends CommandGenericHID {
    * Constructs an event instance around the right stick button's digital signal.
    *
    * @return an event instance representing the right stick button's digital signal attached to the
-   *     {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #rightStick(EventLoop)
    */
   public Trigger rightStick() {
-    return rightStick(Scheduler.getInstance().getDefaultButtonLoop());
+    return rightStick(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -129,11 +129,11 @@ public class CommandStadiaController extends CommandGenericHID {
    * Constructs an event instance around the right trigger button's digital signal.
    *
    * @return an event instance representing the right trigger button's digital signal attached to
-   *     the {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     the {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #rightTrigger(EventLoop)
    */
   public Trigger rightTrigger() {
-    return rightTrigger(Scheduler.getInstance().getDefaultButtonLoop());
+    return rightTrigger(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -151,11 +151,11 @@ public class CommandStadiaController extends CommandGenericHID {
    * Constructs an event instance around the left trigger button's digital signal.
    *
    * @return an event instance representing the left trigger button's digital signal attached to the
-   *     {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #leftTrigger(EventLoop)
    */
   public Trigger leftTrigger() {
-    return leftTrigger(Scheduler.getInstance().getDefaultButtonLoop());
+    return leftTrigger(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -173,11 +173,11 @@ public class CommandStadiaController extends CommandGenericHID {
    * Constructs an event instance around the A button's digital signal.
    *
    * @return an event instance representing the A button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #a(EventLoop)
    */
   public Trigger a() {
-    return a(Scheduler.getInstance().getDefaultButtonLoop());
+    return a(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -195,11 +195,11 @@ public class CommandStadiaController extends CommandGenericHID {
    * Constructs an event instance around the B button's digital signal.
    *
    * @return an event instance representing the B button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #b(EventLoop)
    */
   public Trigger b() {
-    return b(Scheduler.getInstance().getDefaultButtonLoop());
+    return b(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -217,11 +217,11 @@ public class CommandStadiaController extends CommandGenericHID {
    * Constructs an event instance around the X button's digital signal.
    *
    * @return an event instance representing the X button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #x(EventLoop)
    */
   public Trigger x() {
-    return x(Scheduler.getInstance().getDefaultButtonLoop());
+    return x(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -239,11 +239,11 @@ public class CommandStadiaController extends CommandGenericHID {
    * Constructs an event instance around the Y button's digital signal.
    *
    * @return an event instance representing the Y button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #y(EventLoop)
    */
   public Trigger y() {
-    return y(Scheduler.getInstance().getDefaultButtonLoop());
+    return y(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -261,11 +261,11 @@ public class CommandStadiaController extends CommandGenericHID {
    * Constructs an event instance around the ellipses button's digital signal.
    *
    * @return an event instance representing the ellipses button's digital signal attached to the
-   *     {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #ellipses(EventLoop)
    */
   public Trigger ellipses() {
-    return ellipses(Scheduler.getInstance().getDefaultButtonLoop());
+    return ellipses(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -283,11 +283,11 @@ public class CommandStadiaController extends CommandGenericHID {
    * Constructs an event instance around the stadia button's digital signal.
    *
    * @return an event instance representing the stadia button's digital signal attached to the
-   *     {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #stadia(EventLoop)
    */
   public Trigger stadia() {
-    return stadia(Scheduler.getInstance().getDefaultButtonLoop());
+    return stadia(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -305,11 +305,11 @@ public class CommandStadiaController extends CommandGenericHID {
    * Constructs an event instance around the google button's digital signal.
    *
    * @return an event instance representing the google button's digital signal attached to the
-   *     {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #google(EventLoop)
    */
   public Trigger google() {
-    return google(Scheduler.getInstance().getDefaultButtonLoop());
+    return google(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -327,11 +327,11 @@ public class CommandStadiaController extends CommandGenericHID {
    * Constructs an event instance around the frame button's digital signal.
    *
    * @return an event instance representing the frame button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #frame(EventLoop)
    */
   public Trigger frame() {
-    return frame(Scheduler.getInstance().getDefaultButtonLoop());
+    return frame(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -349,11 +349,11 @@ public class CommandStadiaController extends CommandGenericHID {
    * Constructs an event instance around the hamburger button's digital signal.
    *
    * @return an event instance representing the hamburger button's digital signal attached to the
-   *     {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #hamburger(EventLoop)
    */
   public Trigger hamburger() {
-    return hamburger(Scheduler.getInstance().getDefaultButtonLoop());
+    return hamburger(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**

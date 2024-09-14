@@ -41,10 +41,10 @@ public class CommandPS5Controller extends CommandGenericHID {
    * Constructs an event instance around the L2 button's digital signal.
    *
    * @return an event instance representing the L2 button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    */
   public Trigger L2() {
-    return L2(Scheduler.getInstance().getDefaultButtonLoop());
+    return L2(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -62,10 +62,10 @@ public class CommandPS5Controller extends CommandGenericHID {
    * Constructs an event instance around the R2 button's digital signal.
    *
    * @return an event instance representing the R2 button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    */
   public Trigger R2() {
-    return R2(Scheduler.getInstance().getDefaultButtonLoop());
+    return R2(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -83,10 +83,10 @@ public class CommandPS5Controller extends CommandGenericHID {
    * Constructs an event instance around the L1 button's digital signal.
    *
    * @return an event instance representing the L1 button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    */
   public Trigger L1() {
-    return L1(Scheduler.getInstance().getDefaultButtonLoop());
+    return L1(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -104,10 +104,10 @@ public class CommandPS5Controller extends CommandGenericHID {
    * Constructs an event instance around the R1 button's digital signal.
    *
    * @return an event instance representing the R1 button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    */
   public Trigger R1() {
-    return R1(Scheduler.getInstance().getDefaultButtonLoop());
+    return R1(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -125,10 +125,10 @@ public class CommandPS5Controller extends CommandGenericHID {
    * Constructs an event instance around the L3 button's digital signal.
    *
    * @return an event instance representing the L3 button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    */
   public Trigger L3() {
-    return L3(Scheduler.getInstance().getDefaultButtonLoop());
+    return L3(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -146,10 +146,10 @@ public class CommandPS5Controller extends CommandGenericHID {
    * Constructs an event instance around the R3 button's digital signal.
    *
    * @return an event instance representing the R3 button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    */
   public Trigger R3() {
-    return R3(Scheduler.getInstance().getDefaultButtonLoop());
+    return R3(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -167,10 +167,10 @@ public class CommandPS5Controller extends CommandGenericHID {
    * Constructs an event instance around the square button's digital signal.
    *
    * @return an event instance representing the square button's digital signal attached to the
-   *     {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    */
   public Trigger square() {
-    return square(Scheduler.getInstance().getDefaultButtonLoop());
+    return square(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -188,10 +188,10 @@ public class CommandPS5Controller extends CommandGenericHID {
    * Constructs an event instance around the cross button's digital signal.
    *
    * @return an event instance representing the cross button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    */
   public Trigger cross() {
-    return cross(Scheduler.getInstance().getDefaultButtonLoop());
+    return cross(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -209,10 +209,10 @@ public class CommandPS5Controller extends CommandGenericHID {
    * Constructs an event instance around the triangle button's digital signal.
    *
    * @return an event instance representing the triangle button's digital signal attached to the
-   *     {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    */
   public Trigger triangle() {
-    return triangle(Scheduler.getInstance().getDefaultButtonLoop());
+    return triangle(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -230,10 +230,10 @@ public class CommandPS5Controller extends CommandGenericHID {
    * Constructs an event instance around the circle button's digital signal.
    *
    * @return an event instance representing the circle button's digital signal attached to the
-   *     {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    */
   public Trigger circle() {
-    return circle(Scheduler.getInstance().getDefaultButtonLoop());
+    return circle(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -251,10 +251,10 @@ public class CommandPS5Controller extends CommandGenericHID {
    * Constructs an event instance around the create button's digital signal.
    *
    * @return an event instance representing the create button's digital signal attached to the
-   *     {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    */
   public Trigger create() {
-    return create(Scheduler.getInstance().getDefaultButtonLoop());
+    return create(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -272,10 +272,10 @@ public class CommandPS5Controller extends CommandGenericHID {
    * Constructs an event instance around the PS button's digital signal.
    *
    * @return an event instance representing the PS button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    */
   public Trigger PS() {
-    return PS(Scheduler.getInstance().getDefaultButtonLoop());
+    return PS(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -293,10 +293,10 @@ public class CommandPS5Controller extends CommandGenericHID {
    * Constructs an event instance around the options button's digital signal.
    *
    * @return an event instance representing the options button's digital signal attached to the
-   *     {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    */
   public Trigger options() {
-    return options(Scheduler.getInstance().getDefaultButtonLoop());
+    return options(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -314,10 +314,10 @@ public class CommandPS5Controller extends CommandGenericHID {
    * Constructs an event instance around the touchpad's digital signal.
    *
    * @return an event instance representing the touchpad's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    */
   public Trigger touchpad() {
-    return touchpad(Scheduler.getInstance().getDefaultButtonLoop());
+    return touchpad(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**

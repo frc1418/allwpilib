@@ -371,7 +371,7 @@ public class Scheduler {
 
   /**
    * Updates the command scheduler. This will process trigger bindings on anything attached to the
-   * {@link #getDefaultButtonLoop() default event loop}, begin running any commands scheduled since
+   * {@link #getDefaultEventLoop() default event loop}, begin running any commands scheduled since
    * the previous call to {@code run()}, process periodic callbacks added with {@link
    * #addPeriodic(Runnable)} and {@link #sideload(Consumer)}, update running commands, and schedule
    * default commands for any resources that are not owned by a running command.
@@ -721,7 +721,15 @@ public class Scheduler {
     return Continuation.yield(scope);
   }
 
-  public EventLoop getDefaultButtonLoop() {
+  /**
+   * An event loop used by the scheduler to poll triggers that schedule or cancel commands. This
+   * event loop is always polled on every call to {@link #run()}. Custom event loops need to be
+   * bound to this one for synchronicity with the scheduler; however, they can always be polled
+   * manually before or after the call to {@link #run()}.
+   *
+   * @return the default event loop.
+   */
+  public EventLoop getDefaultEventLoop() {
     return eventLoop;
   }
 }

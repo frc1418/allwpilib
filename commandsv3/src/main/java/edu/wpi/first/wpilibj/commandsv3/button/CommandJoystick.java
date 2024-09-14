@@ -40,11 +40,11 @@ public class CommandJoystick extends CommandGenericHID {
    * Constructs an event instance around the trigger button's digital signal.
    *
    * @return an event instance representing the trigger button's digital signal attached to the
-   *     {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #trigger(EventLoop)
    */
   public Trigger trigger() {
-    return trigger(Scheduler.getInstance().getDefaultButtonLoop());
+    return trigger(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -62,11 +62,11 @@ public class CommandJoystick extends CommandGenericHID {
    * Constructs an event instance around the top button's digital signal.
    *
    * @return an event instance representing the top button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #top(EventLoop)
    */
   public Trigger top() {
-    return top(Scheduler.getInstance().getDefaultButtonLoop());
+    return top(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**

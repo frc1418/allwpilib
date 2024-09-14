@@ -41,11 +41,11 @@ public class CommandXboxController extends CommandGenericHID {
    * Constructs an event instance around the left bumper's digital signal.
    *
    * @return an event instance representing the left bumper's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #leftBumper(EventLoop)
    */
   public Trigger leftBumper() {
-    return leftBumper(Scheduler.getInstance().getDefaultButtonLoop());
+    return leftBumper(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -63,11 +63,11 @@ public class CommandXboxController extends CommandGenericHID {
    * Constructs an event instance around the right bumper's digital signal.
    *
    * @return an event instance representing the right bumper's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #rightBumper(EventLoop)
    */
   public Trigger rightBumper() {
-    return rightBumper(Scheduler.getInstance().getDefaultButtonLoop());
+    return rightBumper(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -85,11 +85,11 @@ public class CommandXboxController extends CommandGenericHID {
    * Constructs an event instance around the left stick button's digital signal.
    *
    * @return an event instance representing the left stick button's digital signal attached to the
-   *     {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #leftStick(EventLoop)
    */
   public Trigger leftStick() {
-    return leftStick(Scheduler.getInstance().getDefaultButtonLoop());
+    return leftStick(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -107,11 +107,11 @@ public class CommandXboxController extends CommandGenericHID {
    * Constructs an event instance around the right stick button's digital signal.
    *
    * @return an event instance representing the right stick button's digital signal attached to the
-   *     {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #rightStick(EventLoop)
    */
   public Trigger rightStick() {
-    return rightStick(Scheduler.getInstance().getDefaultButtonLoop());
+    return rightStick(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -129,11 +129,11 @@ public class CommandXboxController extends CommandGenericHID {
    * Constructs an event instance around the A button's digital signal.
    *
    * @return an event instance representing the A button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #a(EventLoop)
    */
   public Trigger a() {
-    return a(Scheduler.getInstance().getDefaultButtonLoop());
+    return a(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -151,11 +151,11 @@ public class CommandXboxController extends CommandGenericHID {
    * Constructs an event instance around the B button's digital signal.
    *
    * @return an event instance representing the B button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #b(EventLoop)
    */
   public Trigger b() {
-    return b(Scheduler.getInstance().getDefaultButtonLoop());
+    return b(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -173,11 +173,11 @@ public class CommandXboxController extends CommandGenericHID {
    * Constructs an event instance around the X button's digital signal.
    *
    * @return an event instance representing the X button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #x(EventLoop)
    */
   public Trigger x() {
-    return x(Scheduler.getInstance().getDefaultButtonLoop());
+    return x(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -195,11 +195,11 @@ public class CommandXboxController extends CommandGenericHID {
    * Constructs an event instance around the Y button's digital signal.
    *
    * @return an event instance representing the Y button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #y(EventLoop)
    */
   public Trigger y() {
-    return y(Scheduler.getInstance().getDefaultButtonLoop());
+    return y(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -217,11 +217,11 @@ public class CommandXboxController extends CommandGenericHID {
    * Constructs an event instance around the start button's digital signal.
    *
    * @return an event instance representing the start button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #start(EventLoop)
    */
   public Trigger start() {
-    return start(Scheduler.getInstance().getDefaultButtonLoop());
+    return start(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -239,11 +239,11 @@ public class CommandXboxController extends CommandGenericHID {
    * Constructs an event instance around the back button's digital signal.
    *
    * @return an event instance representing the back button's digital signal attached to the {@link
-   *     Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     Scheduler#getDefaultEventLoop() default scheduler button loop}.
    * @see #back(EventLoop)
    */
   public Trigger back() {
-    return back(Scheduler.getInstance().getDefaultButtonLoop());
+    return back(Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -278,11 +278,11 @@ public class CommandXboxController extends CommandGenericHID {
    * @param threshold the minimum axis value for the returned {@link Trigger} to be true. This value
    *     should be in the range [0, 1] where 0 is the unpressed state of the axis.
    * @return a Trigger instance that is true when the left trigger's axis exceeds the provided
-   *     threshold, attached to the {@link Scheduler#getDefaultButtonLoop() default scheduler button
+   *     threshold, attached to the {@link Scheduler#getDefaultEventLoop() default scheduler button
    *     loop}.
    */
   public Trigger leftTrigger(double threshold) {
-    return leftTrigger(threshold, Scheduler.getInstance().getDefaultButtonLoop());
+    return leftTrigger(threshold, Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -290,7 +290,7 @@ public class CommandXboxController extends CommandGenericHID {
    * will be true when the axis value is greater than 0.5.
    *
    * @return a Trigger instance that is true when the left trigger's axis exceeds 0.5, attached to
-   *     the {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     the {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    */
   public Trigger leftTrigger() {
     return leftTrigger(0.5);
@@ -317,11 +317,11 @@ public class CommandXboxController extends CommandGenericHID {
    * @param threshold the minimum axis value for the returned {@link Trigger} to be true. This value
    *     should be in the range [0, 1] where 0 is the unpressed state of the axis.
    * @return a Trigger instance that is true when the right trigger's axis exceeds the provided
-   *     threshold, attached to the {@link Scheduler#getDefaultButtonLoop() default scheduler button
+   *     threshold, attached to the {@link Scheduler#getDefaultEventLoop() default scheduler button
    *     loop}.
    */
   public Trigger rightTrigger(double threshold) {
-    return rightTrigger(threshold, Scheduler.getInstance().getDefaultButtonLoop());
+    return rightTrigger(threshold, Scheduler.getInstance().getDefaultEventLoop());
   }
 
   /**
@@ -329,7 +329,7 @@ public class CommandXboxController extends CommandGenericHID {
    * will be true when the axis value is greater than 0.5.
    *
    * @return a Trigger instance that is true when the right trigger's axis exceeds 0.5, attached to
-   *     the {@link Scheduler#getDefaultButtonLoop() default scheduler button loop}.
+   *     the {@link Scheduler#getDefaultEventLoop() default scheduler button loop}.
    */
   public Trigger rightTrigger() {
     return rightTrigger(0.5);
