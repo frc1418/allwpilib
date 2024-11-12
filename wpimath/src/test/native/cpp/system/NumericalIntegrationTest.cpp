@@ -86,7 +86,7 @@ TEST(NumericalIntegrationTest, ExponentialRKDP) {
 //
 //   x(t) = 12eᵗ/(eᵗ + 1)²
 WPI_IGNORE_DEPRECATED
-TEST(NumericalIntegrationTest, RKDP5TimeVarying) {
+TEST(NumericalIntegrationTest, RKDPTimeVarying) {
   frc::Vectord<1> y0{12.0 * std::exp(5.0) / std::pow(std::exp(5.0) + 1.0, 2.0)};
 
   frc::Vectord<1> y1 = frc::RKDP(
