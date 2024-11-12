@@ -53,8 +53,9 @@ TEST(NumericalIntegrationTest, RK4TimeVarying) {
               1e-3);
 }
 
-// Tests that integrating dx/dt = 0 works with RKDP
 WPI_IGNORE_DEPRECATED
+
+// Tests that integrating dx/dt = 0 works with RKDP
 TEST(NumericalIntegrationTest, ZeroRKDP) {
   frc::Vectord<1> y1 = frc::RKDP(
       [](const frc::Vectord<1>& x, const frc::Vectord<1>& u) {
@@ -65,7 +66,6 @@ TEST(NumericalIntegrationTest, ZeroRKDP) {
 }
 
 // Tests that integrating dx/dt = eˣ works with RKDP
-WPI_IGNORE_DEPRECATED
 TEST(NumericalIntegrationTest, ExponentialRKDP) {
   frc::Vectord<1> y0{0.0};
 
@@ -85,7 +85,6 @@ TEST(NumericalIntegrationTest, ExponentialRKDP) {
 // The true (analytical) solution is:
 //
 //   x(t) = 12eᵗ/(eᵗ + 1)²
-WPI_IGNORE_DEPRECATED
 TEST(NumericalIntegrationTest, RKDPTimeVarying) {
   frc::Vectord<1> y0{12.0 * std::exp(5.0) / std::pow(std::exp(5.0) + 1.0, 2.0)};
 
@@ -98,6 +97,8 @@ TEST(NumericalIntegrationTest, RKDPTimeVarying) {
   EXPECT_NEAR(y1(0), 12.0 * std::exp(6.0) / std::pow(std::exp(6.0) + 1.0, 2.0),
               1e-3);
 }
+
+WPI_UNIGNORE_DEPRECATED
 
 // Tests that integrating dx/dt = 0 works with Tsit5
 TEST(NumericalIntegrationTest, ZeroTsit5) {
