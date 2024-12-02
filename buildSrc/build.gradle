@@ -9,7 +9,7 @@ repositories {
     }
 }
 dependencies {
-    implementation "edu.wpi.first:native-utils:2025.3.0"
+    implementation "edu.wpi.first:native-utils:2025.7.1"
     implementation("org.gradlex:extra-java-module-info:1.9")
     implementation("org.gradlex:java-module-testing:1.5")
 }
