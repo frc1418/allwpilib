@@ -15,7 +15,7 @@ rules_jvm_external_deps()
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 maven_artifacts = [
-    "org.ejml:ejml-simple:0.43.1",
+    "org.ejml:ejml-one:0.43.1",
     "com.fasterxml.jackson.core:jackson-annotations:2.15.2",
     "com.fasterxml.jackson.core:jackson-core:2.15.2",
     "com.fasterxml.jackson.core:jackson-databind:2.15.2",
