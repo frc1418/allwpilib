@@ -66,6 +66,7 @@ public class AnnotationProcessor extends AbstractProcessor {
             });
 
     roundEnv.getRootElements().stream()
+        .filter(e -> e instanceof TypeElement)
         .filter(
             e ->
                 processingEnv

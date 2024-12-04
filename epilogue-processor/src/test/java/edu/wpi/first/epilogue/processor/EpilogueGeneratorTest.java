@@ -20,7 +20,7 @@ class EpilogueGeneratorTest {
   void noFields() {
     String source =
         """
-          package edu.wpi.first.epilogue;
+          package edu.wpi.first.epilogue.generated;
 
           @Logged
           class Example {
@@ -29,10 +29,12 @@ class EpilogueGeneratorTest {
 
     String expected =
         """
-        package edu.wpi.first.epilogue;
+        package edu.wpi.first.epilogue.generated;
 
         import static edu.wpi.first.units.Units.Seconds;
 
+        import edu.wpi.first.epilogue.Logged;
+        import edu.wpi.first.epilogue.EpilogueConfiguration;
         import edu.wpi.first.hal.FRCNetComm;
         import edu.wpi.first.hal.HAL;
 
@@ -75,7 +77,7 @@ class EpilogueGeneratorTest {
   void robotBase() {
     String source =
         """
-          package edu.wpi.first.epilogue;
+          package edu.wpi.first.epilogue.generated;
 
           @Logged
           class Example extends edu.wpi.first.wpilibj.RobotBase {
@@ -88,10 +90,12 @@ class EpilogueGeneratorTest {
 
     String expected =
         """
-        package edu.wpi.first.epilogue;
+        package edu.wpi.first.epilogue.generated;
 
         import static edu.wpi.first.units.Units.Seconds;
 
+        import edu.wpi.first.epilogue.Logged;
+        import edu.wpi.first.epilogue.EpilogueConfiguration;
         import edu.wpi.first.hal.FRCNetComm;
         import edu.wpi.first.hal.HAL;
 
@@ -133,7 +137,7 @@ class EpilogueGeneratorTest {
   void timedRobot() {
     String source =
         """
-          package edu.wpi.first.epilogue;
+          package edu.wpi.first.epilogue.generated;
 
           @Logged
           class Example extends edu.wpi.first.wpilibj.TimedRobot {
@@ -142,10 +146,12 @@ class EpilogueGeneratorTest {
 
     String expected =
         """
-        package edu.wpi.first.epilogue;
+        package edu.wpi.first.epilogue.generated;
 
         import static edu.wpi.first.units.Units.Seconds;
 
+        import edu.wpi.first.epilogue.Logged;
+        import edu.wpi.first.epilogue.EpilogueConfiguration;
         import edu.wpi.first.hal.FRCNetComm;
         import edu.wpi.first.hal.HAL;
 
@@ -219,7 +225,7 @@ class EpilogueGeneratorTest {
   void multipleRobots() {
     String source =
         """
-          package edu.wpi.first.epilogue;
+          package edu.wpi.first.epilogue.generated;
 
           @Logged
           class AlphaBot extends edu.wpi.first.wpilibj.TimedRobot { }
@@ -230,10 +236,12 @@ class EpilogueGeneratorTest {
 
     String expected =
         """
-        package edu.wpi.first.epilogue;
+        package edu.wpi.first.epilogue.generated;
 
         import static edu.wpi.first.units.Units.Seconds;
 
+        import edu.wpi.first.epilogue.Logged;
+        import edu.wpi.first.epilogue.EpilogueConfiguration;
         import edu.wpi.first.hal.FRCNetComm;
         import edu.wpi.first.hal.HAL;
 
@@ -341,7 +349,7 @@ class EpilogueGeneratorTest {
   void genericCustomLogger() {
     String source =
         """
-        package edu.wpi.first.epilogue;
+        package edu.wpi.first.epilogue.generated;
 
         import edu.wpi.first.epilogue.logging.*;
 
@@ -367,10 +375,12 @@ class EpilogueGeneratorTest {
 
     String expected =
         """
-        package edu.wpi.first.epilogue;
+        package edu.wpi.first.epilogue.generated;
 
         import static edu.wpi.first.units.Units.Seconds;
 
+        import edu.wpi.first.epilogue.Logged;
+        import edu.wpi.first.epilogue.EpilogueConfiguration;
         import edu.wpi.first.hal.FRCNetComm;
         import edu.wpi.first.hal.HAL;
 
