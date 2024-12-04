@@ -1435,7 +1435,7 @@ class AnnotationProcessorTest {
             public CustomPointLogger() {
               super(Point.class);
             }
-  
+
             @Override
             public void update(EpilogueBackend backend, Point point) {
               // Implementation is irrelevant
@@ -1490,7 +1490,7 @@ class AnnotationProcessorTest {
             public VectorLogger() {
               super((Class) Vector.class);
             }
-  
+
             @Override
             public void update(EpilogueBackend backend, Vector<?> object) {
               // Implementation is irrelevant
