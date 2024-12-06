@@ -39,7 +39,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -179,7 +179,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -218,7 +218,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
       import java.lang.invoke.MethodHandles;
@@ -269,7 +269,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
       import java.lang.invoke.MethodHandles;
@@ -322,7 +322,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -370,7 +370,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -414,7 +414,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -461,7 +461,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -506,7 +506,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -551,7 +551,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -598,7 +598,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -645,7 +645,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -695,7 +695,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -744,7 +744,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -794,7 +794,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -853,7 +853,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -904,7 +904,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -954,7 +954,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -1085,7 +1085,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -1137,7 +1137,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -1224,7 +1224,7 @@ class AnnotationProcessorTest {
         package edu.wpi.first.epilogue;
 
         import edu.wpi.first.epilogue.Logged;
-        import edu.wpi.first.epilogue.Epilogue;
+        import edu.wpi.first.epilogue.generated.Epilogue;
         import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
         import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -1287,7 +1287,7 @@ class AnnotationProcessorTest {
         package edu.wpi.first.epilogue;
 
         import edu.wpi.first.epilogue.Logged;
-        import edu.wpi.first.epilogue.Epilogue;
+        import edu.wpi.first.epilogue.generated.Epilogue;
         import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
         import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -1333,7 +1333,7 @@ class AnnotationProcessorTest {
         package edu.wpi.first.epilogue;
 
         import edu.wpi.first.epilogue.Logged;
-        import edu.wpi.first.epilogue.Epilogue;
+        import edu.wpi.first.epilogue.generated.Epilogue;
         import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
         import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -1373,7 +1373,7 @@ class AnnotationProcessorTest {
         package edu.wpi.first.epilogue;
 
         import edu.wpi.first.epilogue.Logged;
-        import edu.wpi.first.epilogue.Epilogue;
+        import edu.wpi.first.epilogue.generated.Epilogue;
         import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
         import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -1426,7 +1426,7 @@ class AnnotationProcessorTest {
         package edu.wpi.first.epilogue;
 
         import edu.wpi.first.epilogue.Logged;
-        import edu.wpi.first.epilogue.Epilogue;
+        import edu.wpi.first.epilogue.generated.Epilogue;
         import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
         import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -1478,7 +1478,7 @@ class AnnotationProcessorTest {
         package edu.wpi.first.epilogue;
 
         import edu.wpi.first.epilogue.Logged;
-        import edu.wpi.first.epilogue.Epilogue;
+        import edu.wpi.first.epilogue.generated.Epilogue;
         import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
         import edu.wpi.first.epilogue.logging.EpilogueBackend;
         import java.lang.invoke.MethodHandles;
@@ -1569,21 +1569,21 @@ class AnnotationProcessorTest {
 
         record Point(int x, int y) {}
 
-        @CustomLoggerFor(Point.class)
-        class CustomPointLogger extends ClassSpecificLogger<Point> {
-          public CustomPointLogger() {
-            super(Point.class);
-          }
-
-          @Override
-          public void update(EpilogueBackend backend, Point point) {
-            // Implementation is irrelevant
-          }
-        }
-
         @Logged
-        class Example {
+        public class Example {
           Point point;
+
+          @CustomLoggerFor(Point.class)
+          public static class CustomPointLogger extends ClassSpecificLogger<Point> {
+            public CustomPointLogger() {
+              super(Point.class);
+            }
+
+            @Override
+            public void update(EpilogueBackend backend, Point point) {
+              // Implementation is irrelevant
+            }
+          }
         }
         """;
 
@@ -1592,7 +1592,7 @@ class AnnotationProcessorTest {
       package edu.wpi.first.epilogue;
 
       import edu.wpi.first.epilogue.Logged;
-      import edu.wpi.first.epilogue.Epilogue;
+      import edu.wpi.first.epilogue.generated.Epilogue;
       import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
       import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -1624,21 +1624,21 @@ class AnnotationProcessorTest {
         import edu.wpi.first.math.Num;
         import edu.wpi.first.math.Vector;
 
-        @CustomLoggerFor(Vector.class)
-        class VectorLogger extends ClassSpecificLogger<Vector<?>> {
-          public VectorLogger() {
-            super((Class) Vector.class);
-          }
-
-          @Override
-          public void update(EpilogueBackend backend, Vector<?> object) {
-            // Implementation is irrelevant
-          }
-        }
-
         @Logged
-        class Example {
+        public class Example {
           Vector<N3> vec;
+
+          @CustomLoggerFor(Vector.class)
+          public static class VectorLogger extends ClassSpecificLogger<Vector<?>> {
+            public VectorLogger() {
+              super((Class) Vector.class);
+            }
+
+            @Override
+            public void update(EpilogueBackend backend, Vector<?> object) {
+              // Implementation is irrelevant
+            }
+          }
         }
         """;
 
@@ -1647,7 +1647,7 @@ class AnnotationProcessorTest {
         package edu.wpi.first.epilogue;
 
         import edu.wpi.first.epilogue.Logged;
-        import edu.wpi.first.epilogue.Epilogue;
+        import edu.wpi.first.epilogue.generated.Epilogue;
         import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
         import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -1755,7 +1755,7 @@ class AnnotationProcessorTest {
         package edu.wpi.first.epilogue;
 
         import edu.wpi.first.epilogue.Logged;
-        import edu.wpi.first.epilogue.Epilogue;
+        import edu.wpi.first.epilogue.generated.Epilogue;
         import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
         import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -1843,7 +1843,7 @@ class AnnotationProcessorTest {
         package edu.wpi.first.epilogue;
 
         import edu.wpi.first.epilogue.Logged;
-        import edu.wpi.first.epilogue.Epilogue;
+        import edu.wpi.first.epilogue.generated.Epilogue;
         import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
         import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
@@ -1895,7 +1895,7 @@ class AnnotationProcessorTest {
         package edu.wpi.first.epilogue;
 
         import edu.wpi.first.epilogue.Logged;
-        import edu.wpi.first.epilogue.Epilogue;
+        import edu.wpi.first.epilogue.generated.Epilogue;
         import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
         import edu.wpi.first.epilogue.logging.EpilogueBackend;
 

@@ -74,6 +74,9 @@ dependencies {
     devImplementation sourceSets.main.output
 }
 
+apply from: "${rootDir}/shared/java/opencv-module-patches.gradle"
+apply from: "${rootDir}/shared/java/wpimath-module-patches.gradle"
+
 apply plugin: 'cpp'
 apply plugin: 'edu.wpi.first.NativeUtils'
 apply plugin: ExtraTasks
@@ -167,6 +170,9 @@ test {
     testLogging {
         outputs.upToDateWhen {false}
         showStandardStreams = true
+    }
+    moduleOptions {
+        runOnClasspath = true
     }
 }
 

@@ -23,16 +23,18 @@ class EpilogueGeneratorTest {
           package edu.wpi.first.epilogue;
 
           @Logged
-          class Example {
+          public class Example {
           }
           """;
 
     String expected =
         """
-        package edu.wpi.first.epilogue;
+        package edu.wpi.first.epilogue.generated;
 
         import static edu.wpi.first.units.Units.Seconds;
 
+        import edu.wpi.first.epilogue.Logged;
+        import edu.wpi.first.epilogue.EpilogueConfiguration;
         import edu.wpi.first.hal.FRCNetComm;
         import edu.wpi.first.hal.HAL;
 
@@ -78,7 +80,7 @@ class EpilogueGeneratorTest {
           package edu.wpi.first.epilogue;
 
           @Logged
-          class Example extends edu.wpi.first.wpilibj.RobotBase {
+          public class Example extends edu.wpi.first.wpilibj.RobotBase {
             @Override
             public void startCompetition() {}
             @Override
@@ -88,10 +90,12 @@ class EpilogueGeneratorTest {
 
     String expected =
         """
-        package edu.wpi.first.epilogue;
+        package edu.wpi.first.epilogue.generated;
 
         import static edu.wpi.first.units.Units.Seconds;
 
+        import edu.wpi.first.epilogue.Logged;
+        import edu.wpi.first.epilogue.EpilogueConfiguration;
         import edu.wpi.first.hal.FRCNetComm;
         import edu.wpi.first.hal.HAL;
 
@@ -136,16 +140,18 @@ class EpilogueGeneratorTest {
           package edu.wpi.first.epilogue;
 
           @Logged
-          class Example extends edu.wpi.first.wpilibj.TimedRobot {
+          public class Example extends edu.wpi.first.wpilibj.TimedRobot {
           }
           """;
 
     String expected =
         """
-        package edu.wpi.first.epilogue;
+        package edu.wpi.first.epilogue.generated;
 
         import static edu.wpi.first.units.Units.Seconds;
 
+        import edu.wpi.first.epilogue.Logged;
+        import edu.wpi.first.epilogue.EpilogueConfiguration;
         import edu.wpi.first.hal.FRCNetComm;
         import edu.wpi.first.hal.HAL;
 
@@ -219,7 +225,9 @@ class EpilogueGeneratorTest {
   void multipleRobots() {
     String source =
         """
-          package edu.wpi.first.epilogue;
+          package edu.wpi.first.epilogue.generated;
+
+          import edu.wpi.first.epilogue.Logged;
 
           @Logged
           class AlphaBot extends edu.wpi.first.wpilibj.TimedRobot { }
@@ -230,15 +238,17 @@ class EpilogueGeneratorTest {
 
     String expected =
         """
-        package edu.wpi.first.epilogue;
+        package edu.wpi.first.epilogue.generated;
 
         import static edu.wpi.first.units.Units.Seconds;
 
+        import edu.wpi.first.epilogue.Logged;
+        import edu.wpi.first.epilogue.EpilogueConfiguration;
         import edu.wpi.first.hal.FRCNetComm;
         import edu.wpi.first.hal.HAL;
 
-        import edu.wpi.first.epilogue.AlphaBotLogger;
-        import edu.wpi.first.epilogue.BetaBotLogger;
+        import edu.wpi.first.epilogue.generated.AlphaBotLogger;
+        import edu.wpi.first.epilogue.generated.BetaBotLogger;
 
         public final class Epilogue {
           static {
@@ -273,7 +283,7 @@ class EpilogueGeneratorTest {
            * new values. Alternatively, {@code bind()} can be used to update at an offset from
            * the main robot loop.
            */
-          public static void update(edu.wpi.first.epilogue.AlphaBot robot) {
+          public static void update(edu.wpi.first.epilogue.generated.AlphaBot robot) {
             long start = System.nanoTime();
             alphaBotLogger.tryUpdate(config.backend.getNested(config.root), robot, config.errorHandler);
             config.backend.log(\"Epilogue/Stats/Last Run\", (System.nanoTime() - start) / 1e6);
@@ -287,7 +297,7 @@ class EpilogueGeneratorTest {
            * directly from sensors will be slightly different from data used in the main robot
            * loop.
            */
-          public static void bind(edu.wpi.first.epilogue.AlphaBot robot) {
+          public static void bind(edu.wpi.first.epilogue.generated.AlphaBot robot) {
             if (config.loggingPeriod == null) {
               config.loggingPeriod = Seconds.of(robot.getPeriod());
             }
@@ -305,7 +315,7 @@ class EpilogueGeneratorTest {
            * new values. Alternatively, {@code bind()} can be used to update at an offset from
            * the main robot loop.
            */
-          public static void update(edu.wpi.first.epilogue.BetaBot robot) {
+          public static void update(edu.wpi.first.epilogue.generated.BetaBot robot) {
             long start = System.nanoTime();
             betaBotLogger.tryUpdate(config.backend.getNested(config.root), robot, config.errorHandler);
             config.backend.log(\"Epilogue/Stats/Last Run\", (System.nanoTime() - start) / 1e6);
@@ -319,7 +329,7 @@ class EpilogueGeneratorTest {
            * directly from sensors will be slightly different from data used in the main robot
            * loop.
            */
-          public static void bind(edu.wpi.first.epilogue.BetaBot robot) {
+          public static void bind(edu.wpi.first.epilogue.generated.BetaBot robot) {
             if (config.loggingPeriod == null) {
               config.loggingPeriod = Seconds.of(robot.getPeriod());
             }
@@ -349,33 +359,35 @@ class EpilogueGeneratorTest {
         class B extends A {}
         class C extends A {}
 
-        @CustomLoggerFor({A.class, B.class, C.class})
-        class CustomLogger extends ClassSpecificLogger<A> {
-          public CustomLogger() { super(A.class); }
-
-          @Override
-          public void update(EpilogueBackend backend, A object) {} // implementation is irrelevant
-        }
-
         @Logged
-        class Example {
+        public class Example {
           A a_b_or_c;
           B b;
           C c;
+
+          @CustomLoggerFor({A.class, B.class, C.class})
+          public static class CustomLogger extends ClassSpecificLogger<A> {
+            public CustomLogger() { super(A.class); }
+
+            @Override
+            public void update(EpilogueBackend backend, A object) {} // implementation is irrelevant
+          }
         }
         """;
 
     String expected =
         """
-        package edu.wpi.first.epilogue;
+        package edu.wpi.first.epilogue.generated;
 
         import static edu.wpi.first.units.Units.Seconds;
 
+        import edu.wpi.first.epilogue.Logged;
+        import edu.wpi.first.epilogue.EpilogueConfiguration;
         import edu.wpi.first.hal.FRCNetComm;
         import edu.wpi.first.hal.HAL;
 
         import edu.wpi.first.epilogue.ExampleLogger;
-        import edu.wpi.first.epilogue.CustomLogger;
+        import edu.wpi.first.epilogue.Example.CustomLogger;
 
         public final class Epilogue {
           static {
@@ -416,7 +428,9 @@ class EpilogueGeneratorTest {
         javac()
             .withOptions(kJavaVersionOptions)
             .withProcessors(new AnnotationProcessor())
-            .compile(JavaFileObjects.forSourceString("", loggedClassContent));
+            .compile(
+                JavaFileObjects.forSourceString(
+                    "edu.wpi.first.epilogue.Example", loggedClassContent));
 
     assertThat(compilation).succeededWithoutWarnings();
     var generatedFiles = compilation.generatedSourceFiles();
