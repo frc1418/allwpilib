@@ -109,8 +109,8 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: 17
+          distribution: 'zulu'
+          java-version: 21
           architecture: ${{ matrix.architecture }}
       - name: Import Developer ID Certificate
         uses: wpilibsuite/import-signing-certificate@v2
@@ -178,8 +178,8 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: 17
+          distribution: 'zulu'
+          java-version: 21
       - name: Set release environment variable
         run: echo "EXTRA_GRADLE_ARGS=-PreleaseMode" >> $GITHUB_ENV
         if: startsWith(github.ref, 'refs/tags/v2027')
@@ -240,8 +240,8 @@ jobs:
           github.repository == 'wpilibsuite/allwpilib' &&
           (github.ref == 'refs/heads/2027' || startsWith(github.ref, 'refs/tags/v2027'))
         with:
-          distribution: 'temurin'
-          java-version: 17
+          distribution: 'zulu'
+          java-version: 21
       - name: Combine (2027)
         if: |
           github.repository == 'wpilibsuite/allwpilib' &&
