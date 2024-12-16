@@ -105,8 +105,8 @@ jobs:
           name: MavenArtifacts
       - uses: actions/setup-java@v4
         with:
-          java-version: 17
-          distribution: 'temurin'
+          java-version: 21
+          distribution: 'zulu'
       - name: Move artifacts
         run: mkdir -p ~/releases/maven/development && cp -r edu ~/releases/maven/development
       - name: Install dependencies
@@ -136,8 +136,8 @@ jobs:
           name: MavenArtifacts
       - uses: actions/setup-java@v4
         with:
-          java-version: 17
-          distribution: 'temurin'
+          java-version: 21
+          distribution: 'zulu'
       - name: Move artifacts
         run: mkdir -p ~/releases/maven/development && cp -r edu ~/releases/maven/development
       - name: Build with Gradle
