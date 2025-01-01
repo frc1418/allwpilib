@@ -312,7 +312,11 @@ int cameracalibration::calibrate(const std::string& input_video,
   cv::Size boardSize(board_width - 1, board_height - 1);
   cv::Size imagerSize(imagerWidthPixels, imagerHeightPixels);
 
+  int frameIdx = 0;
   while (video_capture.grab()) {
+    std::cout << "Frame index " << frameIdx << std::endl;
+    frameIdx++;
+
     cv::Mat frame;
     video_capture.retrieve(frame);
 
