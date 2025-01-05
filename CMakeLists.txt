@@ -300,8 +300,6 @@ endif()
 
 add_subdirectory(datalogcli)
 
-add_subdirectory(protoplugin)
-
 if(WITH_WPIMATH)
     if(WITH_JAVA)
         set(WPIUNITS_DEP_REPLACE ${WPIUNITS_DEP_REPLACE_IMPL})
