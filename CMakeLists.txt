@@ -298,7 +298,7 @@ if(WITH_NTCORE)
     add_subdirectory(ntcore)
 endif()
 
-add_subdirectory(datalogcli)
+add_subdirectory(datalog-export)
 
 if(WITH_WPIMATH)
     if(WITH_JAVA)
