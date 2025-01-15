@@ -83,7 +83,8 @@ struct Instance {
   std::vector<std::string> m_addresses;
   int m_tableListener;
   int m_nextPort{CameraServer::kBasePort};
-  // Listener callback will capture [this], so let's make sure the callback is removed before anything else is destroyed.
+  // Listener callback will capture [this], so let's make sure the callback is
+  // removed before anything else is destroyed.
   cs::VideoListener m_videoListener;
 };
 
